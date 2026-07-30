@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en" class="mode-technical">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Joshua Heinstein — Engineer</title>
+<meta name="description" content="Joshua Heinstein — engineer in New York City. Embedded systems, FPGA and RISC-V design, vehicle telemetry, and cross-functional engineering leadership. Harvey Mudd College, B.S. Engineering.">
+<meta name="author" content="Joshua Heinstein">
+<meta property="og:title" content="Joshua Heinstein — Engineer">
+<meta property="og:description" content="Embedded systems, FPGA and RISC-V design, vehicle telemetry, and cross-functional engineering leadership.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='system-ui'>⚡</text></svg>">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<a class="skip" href="#work">Skip to content</a>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<!-- ─────────────────────────── NAV ─────────────────────────── -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#top" aria-label="Joshua Heinstein, home">
+      <span class="nav-logo-mark">JH</span>
+      <span class="nav-logo-text">Joshua Heinstein</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#work">Work</a>
+      <a href="#experience">Experience</a>
+      <a href="#skills">Skills</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <div class="nav-actions">
+      <!-- Positioning toggle -->
+      <div class="mode-switch" role="group" aria-label="Choose how to view this portfolio">
+        <span class="mode-switch-thumb" aria-hidden="true"></span>
+        <button type="button" class="mode-btn" data-mode="technical" aria-pressed="true">Embedded</button>
+        <button type="button" class="mode-btn" data-mode="general" aria-pressed="false">Systems</button>
+      </div>
+      <button type="button" class="icon-btn" id="theme-btn" aria-label="Switch color theme">
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><g class="rays"><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8"/></g></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 14.6A8.6 8.6 0 1 1 9.4 3.8a7 7 0 0 0 10.8 10.8z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ─────────────────────────── HERO ─────────────────────────── -->
+<section class="hero">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="hero-grid" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <p class="eyebrow reveal">Engineer · New York City</p>
+
+    <h1 class="hero-name reveal" data-delay="1">
+      <span class="ln">Joshua</span>
+      <span class="ln">Heinstein</span>
+    </h1>
+
+    <div class="hero-lede reveal" data-delay="2">
+      <p class="m-tech">I build systems where silicon meets the physical world — from a
+        32-bit RISC-V processor written in SystemVerilog to a fleet of vehicle data
+        loggers running on real roads.</p>
+      <p class="m-gen">I lead engineering teams and untangle hard systems problems —
+        automating a laboratory process end to end, and root-causing field failures
+        in electric vehicles under a three-week deadline.</p>
+    </div>
+
+    <p class="hero-meta reveal" data-delay="3">
+      Harvey Mudd College · B.S. Engineering, May 2026
+      <span class="dot" aria-hidden="true">·</span> Dean's List
+      <span class="dot" aria-hidden="true">·</span> GPA 3.65
+    </p>
+
+    <div class="hero-cta reveal" data-delay="4">
+      <a class="btn btn-primary" href="#work">
+        See selected work
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg>
+      </a>
+      <a class="btn btn-ghost" href="#contact">Get in touch</a>
+    </div>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true"><span></span></div>
+</section>
+
+<!-- ─────────────────────────── STATS ─────────────────────────── -->
+<section class="stats-band" aria-label="Highlights">
+  <div class="wrap">
+    <div class="stats">
+      <!-- Embedded / hardware framing -->
+      <div class="stat m-tech reveal">
+        <span class="stat-n" data-count="32" data-suffix="-bit">32-bit</span>
+        <span class="stat-l">RV32I processor designed from scratch in SystemVerilog</span>
+      </div>
+      <div class="stat m-tech reveal" data-delay="1">
+        <span class="stat-n" data-count="512" data-suffix="-point">512-point</span>
+        <span class="stat-l">FFT running in real time on an STM32</span>
+      </div>
+      <div class="stat m-tech reveal" data-delay="2">
+        <span class="stat-n" data-count="12">12</span>
+        <span class="stat-l">Teensy-based vehicle data loggers built and deployed</span>
+      </div>
+      <div class="stat m-tech reveal" data-delay="3">
+        <span class="stat-n">cm-level</span>
+        <span class="stat-l">UWB drone localization with off-the-shelf hardware</span>
+      </div>
+
+      <!-- Systems / leadership framing -->
+      <div class="stat m-gen reveal">
+        <span class="stat-n" data-count="6">6</span>
+        <span class="stat-l">engineers led on a cross-functional automation team</span>
+      </div>
+      <div class="stat m-gen reveal" data-delay="1">
+        <span class="stat-n" data-count="95" data-prefix="&gt;" data-suffix="%">&gt;95%</span>
+        <span class="stat-l">recovery rate achieved in live-cell field testing</span>
+      </div>
+      <div class="stat m-gen reveal" data-delay="2">
+        <span class="stat-n" data-count="3">3</span>
+        <span class="stat-l">weeks from concept to a fleet deployed in the field</span>
+      </div>
+      <div class="stat m-gen reveal" data-delay="3">
+        <span class="stat-n" data-count="100">100</span>
+        <span class="stat-l">page trade-off and KPI report authored for senior management</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── WORK ─────────────────────────── -->
+<section id="work" class="section">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <p class="eyebrow">Selected work</p>
+      <h2 class="section-title">
+        <span class="m-tech">Things I designed, wrote, and put on a bench.</span>
+        <span class="m-gen">Problems I owned from question to shipped answer.</span>
+      </h2>
+    </header>
+
+    <div class="projects">
+
+      <!-- 1. Vehicle telemetry ─────────────────────────── -->
+      <article class="project feature reveal" id="p-logger">
+        <div class="project-media">
+          <img src="assets/img/logger-fleet.jpg" alt="Fleet of Teensy 4.1 vehicle data loggers in 3D-printed enclosures" loading="lazy" onerror="this.closest('.project-media').classList.add('no-img')">
+          <div class="ph" aria-hidden="true"><span>01</span></div>
+        </div>
+        <div class="project-body">
+          <p class="project-tag">Infinite Machine · 2026</p>
+          <h3 class="project-title">
+            <span class="m-tech">Vehicle Telemetry Logger Fleet</span>
+            <span class="m-gen">End-to-End Diagnostic Tooling Program</span>
+          </h3>
+          <div class="m-tech">
+            <p>A fleet of twelve Teensy 4.1 data loggers for an EV platform, built to
+              catch a failure that only appeared in the field: vehicles shutting off at
+              random. The logged telemetry isolated a rogue CAN bus command triggered by
+              a faulty mobile app update.</p>
+            <ul class="bullets">
+              <li>Designed, manufactured, and deployed twelve loggers guaranteeing zero data loss across power interruptions.</li>
+              <li>Wrote a companion desktop application with live CAN decoding, charting, and raw-frame inspection.</li>
+              <li>Iterated 3D-printed vehicle-mount enclosures under tight packaging constraints, with custom cable strain relief.</li>
+            </ul>
+          </div>
+          <div class="m-gen">
+            <p>A critical field failure with no reproduction path. I owned the whole
+              response — instrumenting the vehicles, capturing the data, and tracing the
+              root cause back to a software update error — inside a compressed
+              three-week timeline.</p>
+            <ul class="bullets">
+              <li>Managed the full product lifecycle: structural design, software, manufacturing, and field deployment.</li>
+              <li>Launched twelve highly reliable loggers architected to guarantee data integrity through power loss.</li>
+              <li>Turned millions of raw data points into readable dashboards and metrics for engineering analysis.</li>
+            </ul>
+          </div>
+          <ul class="chips">
+            <li class="m-tech">Teensy 4.1</li><li class="m-tech">CAN bus</li>
+            <li class="m-tech">C++</li><li class="m-tech">Desktop app</li><li class="m-tech">3D printing</li>
+            <li class="m-gen">Root cause analysis</li><li class="m-gen">Product lifecycle</li>
+            <li class="m-gen">Data visualization</li><li class="m-gen">Field deployment</li>
+          </ul>
+          <!-- REPO-LINK: add href when the repo is public -->
+        </div>
+      </article>
+
+      <!-- 2. LED Zeppelin ─────────────────────────── -->
+      <article class="project reveal" id="p-led">
+        <div class="project-media">
+          <img src="assets/img/led-zeppelin.jpg" alt="LED Zeppelin audio visualizer running on an RGB LED display" loading="lazy" onerror="this.closest('.project-media').classList.add('no-img')">
+          <div class="ph" aria-hidden="true"><span>02</span></div>
+        </div>
+        <div class="project-body">
+          <p class="project-tag">Nov 2025 – Dec 2025</p>
+          <h3 class="project-title">
+            <span class="m-tech">LED Zeppelin — Audio Visualizer &amp; Synthesizer</span>
+            <span class="m-gen">Real-Time Audio Algorithm Development</span>
+          </h3>
+          <div class="m-tech">
+            <ul class="bullets">
+              <li>Dual-platform system pairing an STM32 MCU with an iCE40UP5K FPGA to process and visualize live MP3 audio.</li>
+              <li>512-point FFT via CMSIS-DSP on the MCU, extracting dominant frequencies into a composite square wave.</li>
+              <li>FPGA samples that wave in 100&nbsp;ms windows, binning frequency counts into 12 linear bands driving an RGB LED display over PWM.</li>
+            </ul>
+          </div>
+          <div class="m-gen">
+            <ul class="bullets">
+              <li>Programmed a highly optimized Fast Fourier Transform to extract frequency data from live audio streams.</li>
+              <li>Mapped quantitative output to a visual display with ultra-low latency between intake and render.</li>
+            </ul>
+          </div>
+          <ul class="chips">
+            <li class="m-tech">STM32</li><li class="m-tech">iCE40 FPGA</li><li class="m-tech">CMSIS-DSP</li><li class="m-tech">FFT</li><li class="m-tech">PWM</li>
+            <li class="m-gen">Signal processing</li><li class="m-gen">Optimization</li><li class="m-gen">Real-time systems</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 3. RISC-V processor ─────────────────────────── -->
+      <article class="project reveal" id="p-cpu" data-delay="1">
+        <div class="project-media">
+          <img src="assets/img/riscv-processor.jpg" alt="RISC-V multicycle processor simulation waveforms" loading="lazy" onerror="this.closest('.project-media').classList.add('no-img')">
+          <div class="ph" aria-hidden="true"><span>03</span></div>
+        </div>
+        <div class="project-body">
+          <p class="project-tag">Nov 2024 – Dec 2024</p>
+          <h3 class="project-title">
+            <span class="m-tech">RISC-V Multicycle Processor</span>
+            <span class="m-gen">32-Bit Microprocessor Design</span>
+          </h3>
+          <div class="m-tech">
+            <ul class="bullets">
+              <li>A fully functional 32-bit RV32I-compliant microcontroller written from scratch in SystemVerilog.</li>
+              <li>Built every block myself: ALU, control unit, memory interface, datapath.</li>
+              <li>Verified ISA compliance through simulation and directed testing.</li>
+            </ul>
+          </div>
+          <div class="m-gen">
+            <ul class="bullets">
+              <li>Designed a complete 32-bit processor from first principles, implementing each functional block.</li>
+              <li>Built a simulation and verification workflow to prove compliance against the specification.</li>
+            </ul>
+          </div>
+          <ul class="chips">
+            <li class="m-tech">SystemVerilog</li><li class="m-tech">RV32I</li><li class="m-tech">RTL</li><li class="m-tech">Questa</li>
+            <li class="m-gen">Digital design</li><li class="m-gen">Verification</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 4. XDemics ─────────────────────────── -->
+      <article class="project feature reveal" id="p-xdemics">
+        <div class="project-media">
+          <img src="assets/img/xdemics-robot.jpg" alt="Multi-axis robotic bioreactor handling system" loading="lazy" onerror="this.closest('.project-media').classList.add('no-img')">
+          <div class="ph" aria-hidden="true"><span>04</span></div>
+        </div>
+        <div class="project-body">
+          <p class="project-tag">XDemics Corporation · 2025 – 2026</p>
+          <h3 class="project-title">
+            <span class="m-tech">Multi-Axis Bioreactor Automation Robot</span>
+            <span class="m-gen">Laboratory Process Automation — Team Lead</span>
+          </h3>
+          <div class="m-tech">
+            <p>A multi-axis robotic system automating bioreactor cell seeding, growth,
+              fluidizing, and harvesting — replacing a manual protocol with a five-minute
+              automated vibration sequence.</p>
+            <ul class="bullets">
+              <li>Achieved &gt;95% recovery in live-cell testing.</li>
+              <li>Validated fluid dynamic performance with 2D COMSOL simulations and empirical testing, confirming 100% surface coverage.</li>
+              <li>Led a team of six and interfaced directly with XDemics' CTO.</li>
+            </ul>
+          </div>
+          <div class="m-gen">
+            <p>I directed a cross-functional team of six to automate a complex laboratory
+              process handling sensitive biological materials, and carried the technical
+              relationship with the client's executive leadership.</p>
+            <ul class="bullets">
+              <li>Analyzed fluid dynamics data and ran simulation testing to tune angles and vibration speeds, reaching a &gt;95% success rate in field testing.</li>
+              <li>Replaced significant manual labor hours with a repeatable automated protocol.</li>
+              <li>Owned timelines, delegation, and communication across the student team, faculty advisors, and the CTO.</li>
+            </ul>
+          </div>
+          <ul class="chips">
+            <li class="m-tech">COMSOL</li><li class="m-tech">Mechatronics</li><li class="m-tech">Fluid dynamics</li><li class="m-tech">Multi-axis motion</li>
+            <li class="m-gen">Team leadership</li><li class="m-gen">Client management</li><li class="m-gen">Project management</li><li class="m-gen">Simulation</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 5. FMA unit ─────────────────────────── -->
+      <article class="project reveal" id="p-fma">
+        <div class="project-media">
+          <img src="assets/img/fma-unit.jpg" alt="Floating-point multiply-accumulate unit design" loading="lazy" onerror="this.closest('.project-media').classList.add('no-img')">
+          <div class="ph" aria-hidden="true"><span>05</span></div>
+        </div>
+        <div class="project-body">
+          <p class="project-tag">Feb 2025 – May 2025</p>
+          <h3 class="project-title">
+            <span class="m-tech">RISC-V Floating-Point Multiply-Accumulate Unit</span>
+            <span class="m-gen">Microprocessor Quality Assurance &amp; Optimization</span>
+          </h3>
+          <div class="m-tech">
+            <ul class="bullets">
+              <li>A low-power-optimized half-precision FMA implementing the IEEE rounding modes (RTZ, RNE, RP, RN).</li>
+              <li>Wrote test scripts covering numerous edge cases to verify functional correctness.</li>
+            </ul>
+          </div>
+          <div class="m-gen">
+            <ul class="bullets">
+              <li>Designed a low-power-optimized mathematical computation unit implementing complex rounding modes.</li>
+              <li>Developed custom testing scripts to validate edge cases and ensure rigorous functional accuracy before deployment.</li>
+            </ul>
+          </div>
+          <ul class="chips">
+            <li class="m-tech">IEEE 754</li><li class="m-tech">Low power</li><li class="m-tech">SystemVerilog</li>
+            <li class="m-gen">Test engineering</li><li class="m-gen">Edge-case validation</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 6. Ocean robot ─────────────────────────── -->
+      <article class="project reveal" id="p-ocean" data-delay="1">
+        <div class="project-media">
+          <img src="assets/img/ocean-robot.jpg" alt="Autonomous GPS-equipped oceanic surface robot" loading="lazy" onerror="this.closest('.project-media').classList.add('no-img')">
+          <div class="ph" aria-hidden="true"><span>06</span></div>
+        </div>
+        <div class="project-body">
+          <p class="project-tag">Jan 2024 – May 2024</p>
+          <h3 class="project-title">
+            <span class="m-tech">Autonomous Oceanic Surface Robot</span>
+            <span class="m-gen">Autonomous Environmental Data Collector</span>
+          </h3>
+          <div class="m-tech">
+            <ul class="bullets">
+              <li>Led a team of four building a GPS-equipped autonomous robot to measure wind speed and turbidity at preset ocean waypoints.</li>
+              <li>Designed analog sensor conditioning circuits driven by a Teensy 4.0 running custom C++.</li>
+              <li>Processed and analyzed the collected data in MATLAB, Excel, and Python for the final technical report.</li>
+            </ul>
+          </div>
+          <div class="m-gen">
+            <ul class="bullets">
+              <li>Led a team of four to design and deploy an autonomous surface robot for remote environmental data collection.</li>
+              <li>Processed large sensor datasets in MATLAB, Excel, and Python, presenting findings and statistical summaries in a technical report.</li>
+            </ul>
+          </div>
+          <ul class="chips">
+            <li class="m-tech">Teensy 4.0</li><li class="m-tech">Analog circuits</li><li class="m-tech">C++</li><li class="m-tech">GPS</li>
+            <li class="m-gen">Data analysis</li><li class="m-gen">Team leadership</li><li class="m-gen">MATLAB</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 7. Simon game ─────────────────────────── -->
+      <article class="project tech-only reveal" id="p-simon" data-delay="2">
+        <div class="project-media">
+          <img src="assets/img/simon-game.jpg" alt="Bare-metal Simon game on a RISC-V microcontroller" loading="lazy" onerror="this.closest('.project-media').classList.add('no-img')">
+          <div class="ph" aria-hidden="true"><span>07</span></div>
+        </div>
+        <div class="project-body">
+          <p class="project-tag">Oct 2024</p>
+          <h3 class="project-title">Simon Game on a RISC-V MCU</h3>
+          <ul class="bullets">
+            <li>Bare-metal firmware in C on a RISC-V microcontroller, with no external libraries.</li>
+            <li>Implemented GPIO control, button debouncing, LED sequencing, and game logic, tuned for low-latency input.</li>
+          </ul>
+          <ul class="chips">
+            <li>Bare metal</li><li>C</li><li>GPIO</li><li>Debouncing</li>
+          </ul>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── EXPERIENCE ─────────────────────────── -->
+<section id="experience" class="section section-alt">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <p class="eyebrow">Experience</p>
+      <h2 class="section-title">Where I've worked.</h2>
+    </header>
+
+    <ol class="timeline">
+      <li class="tl-item reveal">
+        <div class="tl-when">Jul 2026</div>
+        <div class="tl-what">
+          <h3>Systems Engineer</h3>
+          <p class="tl-org">Infinite Machine · New York, NY</p>
+          <div class="m-tech">
+            <ul class="bullets">
+              <li>Investigated and resolved critical vehicle field failures (random shutoffs) by deploying custom loggers, analyzing telemetry, and isolating a rogue CAN bus command triggered by a faulty mobile app update.</li>
+              <li>Designed, manufactured, and deployed a fleet of 12 Teensy 4.1-based vehicle data loggers for an EV platform.</li>
+              <li>Developed a desktop application with CAN decoding for real-time log analysis, charting, and raw-frame views.</li>
+              <li>Iteratively designed and 3D-printed a vehicle-mount enclosure under strict packaging constraints, integrating custom cable strain relief.</li>
+            </ul>
+          </div>
+          <div class="m-gen">
+            <ul class="bullets">
+              <li>Investigated and resolved critical field failures by designing and deploying custom diagnostic hardware to capture field data, identifying the root cause as a software update error.</li>
+              <li>Built and launched a fleet of 12 highly reliable data loggers, architected to guarantee zero data loss during power interruptions.</li>
+              <li>Developed a desktop application with real-time dashboards, transforming millions of raw data points into readable charts and metrics.</li>
+              <li>Managed the end-to-end product lifecycle of the diagnostic tools — structural design through field deployment — within a compressed 3-week timeline.</li>
+            </ul>
+          </div>
+        </div>
+      </li>
+
+      <li class="tl-item reveal">
+        <div class="tl-when">Sep 2025 – May 2026</div>
+        <div class="tl-what">
+          <h3><span class="m-tech">Team Lead &amp; Student Engineer</span><span class="m-gen">Team Lead &amp; Technical Project Manager</span></h3>
+          <p class="tl-org">XDemics Corporation · Claremont, CA</p>
+          <div class="m-tech">
+            <ul class="bullets">
+              <li>Led a team of 6 designing a multi-axis robotic system to automate bioreactor cell seeding, growth, fluidizing, and harvesting.</li>
+              <li>Achieved &gt;95% recovery in live-cell testing by replacing a manual process with an automated 5-minute vibration protocol.</li>
+              <li>Validated fluid dynamic performance using 2D COMSOL simulations and empirical testing, ensuring 100% surface coverage.</li>
+              <li>Facilitated communication between the student team, faculty advisor, and XDemics' CTO.</li>
+            </ul>
+          </div>
+          <div class="m-gen">
+            <ul class="bullets">
+              <li>Directed a cross-functional team of 6 to automate a complex laboratory process, designing a robotic system to handle sensitive biological materials.</li>
+              <li>Analyzed fluid dynamics data and executed rigorous simulation testing to optimize the machine's angles and vibration speeds, achieving a &gt;95% success rate in field testing.</li>
+              <li>Managed project timelines, task delegation, and technical communication between the engineering team, faculty advisors, and executive leadership.</li>
+            </ul>
+          </div>
+        </div>
+      </li>
+
+      <li class="tl-item reveal">
+        <div class="tl-when">Jan 2025 – May 2025</div>
+        <div class="tl-what">
+          <h3>Systems Engineer</h3>
+          <p class="tl-org">Amazon Prime Air · Claremont, CA</p>
+          <div class="m-tech">
+            <ul class="bullets">
+              <li>Implemented and tested ground- and air-based hardware/software to reduce drone GPS/GNSS reliance near tall buildings.</li>
+              <li>Developed a Python computer vision system targeting millimeter-level accuracy at 40 m for drone 3D localization and heading determination.</li>
+              <li>Tested ultra-wideband localization on drones, achieving cm-level accuracy with off-the-shelf hardware.</li>
+            </ul>
+          </div>
+          <div class="m-gen">
+            <ul class="bullets">
+              <li>Implemented and tested ground- and air-based hardware/software to reduce drone GPS reliance near tall buildings.</li>
+              <li>Designed and executed a data-driven Python algorithm targeting millimeter-level precision for drone positioning.</li>
+              <li>Conducted extensive testing of alternative technologies, synthesizing raw performance data into actionable insights.</li>
+              <li>Authored a comprehensive 100-page report detailing operational trade-offs, KPIs, and recommendations for senior management.</li>
+            </ul>
+          </div>
+        </div>
+      </li>
+
+      <li class="tl-item reveal">
+        <div class="tl-when">Jun 2024 – Aug 2024</div>
+        <div class="tl-what">
+          <h3><span class="m-tech">Structural Engineering Intern</span><span class="m-gen">Structural Engineering Consultant Intern</span></h3>
+          <p class="tl-org">Kimley Horn · West Palm Beach, FL</p>
+          <ul class="bullets">
+            <li>Designed over 10 structures for clients, from foundations for industrial machinery to retaining walls for a marina.</li>
+            <li>Inspected the safety of over 30 buildings in Miami-Dade County and submitted detailed reports for each.</li>
+            <li>Composed professional calculation packages and drafted CAD blueprints to be signed and sealed by licensed engineers.</li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="tl-item reveal">
+        <div class="tl-when">Jan 2024 – May 2024</div>
+        <div class="tl-what">
+          <h3>Engineering Design &amp; Manufacturing TA</h3>
+          <p class="tl-org">Harvey Mudd College · Claremont, CA</p>
+          <ul class="bullets">
+            <li>Taught foundational teamwork skills to improve the process of creating a final product for a client.</li>
+            <li>Provided individual feedback to over 50 students on multiple assignments per week.</li>
+            <li>Composed a weekly memo summarizing crucial information that students often overlooked.</li>
+          </ul>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ─────────────────────────── SKILLS ─────────────────────────── -->
+<section id="skills" class="section">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <p class="eyebrow">Capabilities</p>
+      <h2 class="section-title">
+        <span class="m-tech">The toolchain.</span>
+        <span class="m-gen">What I bring to a team.</span>
+      </h2>
+    </header>
+
+    <div class="skills">
+      <!-- Technical -->
+      <div class="skill-card m-tech reveal">
+        <h3>Hardware &amp; Electronics</h3>
+        <ul class="chips"><li>FPGA</li><li>MCU</li><li>STM32</li><li>Embedded</li><li>Oscilloscope</li><li>Soldering</li><li>KiCAD</li></ul>
+      </div>
+      <div class="skill-card m-tech reveal" data-delay="1">
+        <h3>Languages</h3>
+        <ul class="chips"><li>SystemVerilog</li><li>RISC-V Assembly</li><li>C</li><li>C++</li><li>Python</li><li>Java</li><li>R</li><li>MATLAB</li></ul>
+      </div>
+      <div class="skill-card m-tech reveal" data-delay="2">
+        <h3>Tools &amp; Environments</h3>
+        <ul class="chips"><li>Quartus</li><li>Questa</li><li>Lattice Radiant</li><li>Git</li><li>RTL</li><li>Linux</li><li>Segger</li><li>LabVIEW</li><li>Simulink</li><li>Autodesk Suite</li></ul>
+      </div>
+      <div class="skill-card m-tech reveal" data-delay="3">
+        <h3>Languages Spoken</h3>
+        <ul class="chips"><li>English</li><li>Spanish — fluent</li><li>German — conversational</li></ul>
+      </div>
+
+      <!-- General -->
+      <div class="skill-card m-gen reveal">
+        <h3>Data Analysis &amp; Programming</h3>
+        <ul class="chips"><li>Python</li><li>R</li><li>MATLAB</li><li>C++</li><li>Java</li><li>C</li><li>Excel</li><li>AI/LLM-assisted development</li></ul>
+      </div>
+      <div class="skill-card m-gen reveal" data-delay="1">
+        <h3>Core Competencies</h3>
+        <ul class="chips"><li>Cross-functional leadership</li><li>Root cause analysis</li><li>Project management</li><li>Quantitative research</li></ul>
+      </div>
+      <div class="skill-card m-gen reveal" data-delay="2">
+        <h3>Tools</h3>
+        <ul class="chips"><li>Microsoft Suite</li><li>Autodesk</li><li>Git</li><li>COMSOL</li><li>Simulink</li></ul>
+      </div>
+      <div class="skill-card m-gen reveal" data-delay="3">
+        <h3>Languages Spoken</h3>
+        <ul class="chips"><li>English</li><li>Spanish — fluent</li><li>German — conversational</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── ABOUT ─────────────────────────── -->
+<section id="about" class="section section-alt">
+  <div class="wrap wrap-narrow">
+    <header class="section-head reveal">
+      <p class="eyebrow">About</p>
+    </header>
+    <div class="prose reveal" data-delay="1">
+      <p class="lead m-tech">I like the layer where code stops being abstract — where a
+        register write moves something, or a waveform on a scope tells you the truth your
+        assumptions were hiding.</p>
+      <p class="lead m-gen">I like the problems that don't arrive pre-scoped — the ones
+        where the first job is figuring out what's actually being asked, and the second is
+        getting a team pointed at it.</p>
+
+      <p>I studied engineering at Harvey Mudd, which is a small school with an unusually
+        stubborn insistence that you build the thing yourself. That's where I designed a
+        32-bit RISC-V processor from an empty file, and where I learned that most of
+        engineering is verification.</p>
+
+      <p>Since then I've worked on drone localization at Amazon Prime Air, led a team of
+        six automating a bioreactor process for XDemics, and most recently built vehicle
+        telemetry hardware at an EV company in New York — designing the loggers,
+        manufacturing them, writing the desktop tooling, and taking them into the field.</p>
+
+      <p class="m-tech">I'm looking for embedded, firmware, or hardware systems work where
+        I can own something end to end. I'm in New York City.</p>
+      <p class="m-gen">I'm looking for systems engineering, technical program, or hardware
+        leadership work where the problems are ambiguous and the ownership is real. I'm in
+        New York City.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── CONTACT ─────────────────────────── -->
+<section id="contact" class="section contact">
+  <div class="wrap">
+    <div class="contact-inner reveal">
+      <p class="eyebrow">Contact</p>
+      <h2 class="contact-title">Let's talk.</h2>
+      <p class="contact-sub">Open to roles in New York City and remote. The fastest way to
+        reach me is email.</p>
+
+      <a class="mailto" href="mailto:joshuaheinstein@gmail.com">joshuaheinstein@gmail.com</a>
+
+      <div class="contact-links">
+        <a class="btn btn-ghost" href="tel:+18573661633">857-366-1633</a>
+        <!-- LINKEDIN: replace href with your profile URL -->
+        <a class="btn btn-ghost" href="#" data-needs-url="linkedin">LinkedIn</a>
+        <!-- GITHUB: replace href with your profile URL -->
+        <a class="btn btn-ghost" href="#" data-needs-url="github">GitHub</a>
+      </div>
+
+      <div class="resumes">
+        <a class="resume-card" href="assets/resume/Joshua-Heinstein-Technical-Resume.pdf" download>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v12M7.5 11l4.5 4.5 4.5-4.5M4.5 20h15"/></svg>
+          <span><strong>Technical résumé</strong><small>Embedded, FPGA, hardware roles</small></span>
+        </a>
+        <a class="resume-card" href="assets/resume/Joshua-Heinstein-General-Resume.pdf" download>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v12M7.5 11l4.5 4.5 4.5-4.5M4.5 20h15"/></svg>
+          <span><strong>General résumé</strong><small>Systems, program, leadership roles</small></span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <p>© <span id="year">2026</span> Joshua Heinstein</p>
+    <p>New York City</p>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
