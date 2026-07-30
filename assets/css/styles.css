@@ -211,7 +211,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round
    translates by its own width, so unequal labels would misalign it. */
 .mode-btn {
   position: relative; z-index: 1; padding: 5px 10px; border-radius: 999px;
-  min-width: 88px; text-align: center;
+  min-width: 96px; text-align: center;   /* > "Engineering" at 92.2px */
   font-size: 12.5px; font-weight: 550; color: var(--fg-dim); white-space: nowrap;
   transition: color .3s var(--ease-soft);
 }
@@ -566,9 +566,9 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round
 
 @media (max-width: 560px) {
   .nav-logo-text { display: none; }
-  /* Floor must exceed the natural width of the longer label ("Embedded"),
-     otherwise the two buttons differ and the thumb misaligns. */
-  .mode-btn { min-width: 84px; padding: 5px 8px; font-size: 12px; }
+  /* Floor must exceed the natural width of the longer label ("Engineering",
+     85.3px here), otherwise the two buttons differ and the thumb misaligns. */
+  .mode-btn { min-width: 90px; padding: 5px 8px; font-size: 12px; }
   .stats { grid-template-columns: 1fr; }
   .hero { min-height: auto; padding: 120px 0 72px; }
   .scroll-hint { display: none; }
