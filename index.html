@@ -41,6 +41,7 @@
         <span class="mode-switch-thumb" aria-hidden="true"></span>
         <button type="button" class="mode-btn" data-mode="technical" aria-pressed="true">Engineering</button>
         <button type="button" class="mode-btn" data-mode="general" aria-pressed="false">Leadership</button>
+        <button type="button" class="mode-btn" data-mode="deck" aria-pressed="false">Deep-dive</button>
       </div>
       <button type="button" class="icon-btn" id="theme-btn" aria-label="Switch color theme">
         <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><g class="rays"><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8"/></g></svg>
@@ -602,6 +603,337 @@
         </a>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── DEEP-DIVE DECK ───────────────────────────
+     Only visible in deck mode (see .mode-deck in styles.css). Same content
+     as deck.html, laid out for reading and scrolling rather than projecting —
+     deck.html stays the version to present from and print to PDF.
+     ─────────────────────────────────────────────────────────────────────── -->
+<section id="deck" class="section deck" aria-label="Project deep-dive">
+  <div class="wrap">
+
+    <header class="section-head reveal">
+      <p class="eyebrow">Interview deep-dive</p>
+      <h2 class="section-title">Three projects, in detail.</h2>
+      <p class="deck-intro">The work I'd most want to be asked hard questions
+        about. Each one gets the problem it started from, how it was built, and
+        what I personally did.
+        <a href="deck.html">Open the presentable version →</a>
+      </p>
+    </header>
+
+    <ol class="slides">
+
+      <!-- 01 · Telemetry logger — the failure -->
+      <li class="slide reveal">
+        <p class="slide-tag"><span class="slide-n">01</span> Infinite Machine · 2026</p>
+        <h3 class="slide-title">Vehicles were shutting off at random.</h3>
+        <div class="slide-grid">
+          <div>
+            <p class="slide-lede">A field failure on an EV platform with no
+              reproduction path in the shop. If it won't fail in front of you,
+              you have to go get the data.</p>
+            <ul class="bullets">
+              <li><strong>Three-week window</strong> from problem statement to root cause.</li>
+              <li>I owned the whole response: instrument the vehicles, capture the data, trace it back.</li>
+              <li>Twelve loggers designed, manufactured, and field-deployed.</li>
+            </ul>
+            <div class="slide-metrics">
+              <div><b>12</b><span>Loggers deployed</span></div>
+              <div><b>0</b><span>Data loss across power interruption</span></div>
+              <div><b>3 wk</b><span>Problem to root cause</span></div>
+            </div>
+          </div>
+          <figure class="slide-shot">
+            <img src="assets/img/logger-fleet.jpg" alt="Fleet of Teensy 4.1 vehicle data loggers in 3D-printed enclosures" loading="lazy" onerror="this.closest('.slide-shot').classList.add('no-img')">
+            <div class="ph" aria-hidden="true"><span><b>Photo: the fleet</b>All twelve loggers laid out together — enclosures, harnesses, SD cards.</span></div>
+            <figcaption>Twelve loggers, 3D-printed vehicle-mount enclosures, custom cable strain relief.</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <!-- 02 · Telemetry logger — architecture -->
+      <li class="slide reveal">
+        <p class="slide-tag"><span class="slide-n">02</span> Architecture</p>
+        <h3 class="slide-title">Bus to bench, end to end.</h3>
+        <div class="slide-grid wide-media">
+          <div class="diagram">
+            <svg viewBox="0 0 520 200" role="img" aria-label="Block diagram: vehicle CAN bus into a Teensy 4.1 logger containing a CAN transceiver, ring buffer and block writer, out to an SD card, then to a desktop analysis application">
+              <rect class="d-box" x="4" y="72" width="84" height="58" rx="8"/>
+              <text class="d-t" x="46" y="95" text-anchor="middle">Vehicle</text>
+              <text class="d-s" x="46" y="109" text-anchor="middle">CAN bus</text>
+              <text class="d-s" x="46" y="120" text-anchor="middle">ECUs, app cmds</text>
+              <line class="d-l-a" x1="88" y1="101" x2="124" y2="101"/>
+              <polygon class="d-ar-a" points="124,101 117,97.6 117,104.4"/>
+              <text class="d-lab" x="106" y="93" text-anchor="middle">frames</text>
+              <rect class="d-box-a" x="124" y="26" width="154" height="150" rx="10"/>
+              <text class="d-t" x="201" y="46" text-anchor="middle">Teensy 4.1 logger</text>
+              <rect class="d-box" x="136" y="56" width="130" height="28" rx="6"/>
+              <text class="d-s" x="201" y="70" text-anchor="middle">CAN transceiver</text>
+              <text class="d-s" x="201" y="80" text-anchor="middle">receive + timestamp</text>
+              <rect class="d-box" x="136" y="90" width="130" height="28" rx="6"/>
+              <text class="d-s" x="201" y="104" text-anchor="middle">Ring buffer</text>
+              <text class="d-s" x="201" y="114" text-anchor="middle">decouples bus from SD</text>
+              <rect class="d-box" x="136" y="124" width="130" height="28" rx="6"/>
+              <text class="d-s" x="201" y="138" text-anchor="middle">Block writer</text>
+              <text class="d-s" x="201" y="148" text-anchor="middle">flush + commit</text>
+              <text class="d-lab" x="201" y="168" text-anchor="middle">firmware in C++</text>
+              <text class="d-lab" x="201" y="192" text-anchor="middle">3D-printed enclosure · cable strain relief</text>
+              <line class="d-l" x1="278" y1="101" x2="312" y2="101"/>
+              <polygon class="d-ar" points="312,101 305,97.6 305,104.4"/>
+              <rect class="d-box" x="312" y="72" width="84" height="58" rx="8"/>
+              <text class="d-t" x="354" y="93" text-anchor="middle">SD card</text>
+              <text class="d-s" x="354" y="108" text-anchor="middle">survives</text>
+              <text class="d-s" x="354" y="119" text-anchor="middle">power loss</text>
+              <line class="d-l" x1="396" y1="101" x2="428" y2="101"/>
+              <polygon class="d-ar" points="428,101 421,97.6 421,104.4"/>
+              <rect class="d-box-a" x="428" y="62" width="88" height="78" rx="8"/>
+              <text class="d-t" x="472" y="86" text-anchor="middle">Desktop app</text>
+              <text class="d-s" x="472" y="103" text-anchor="middle">live CAN decode</text>
+              <text class="d-s" x="472" y="115" text-anchor="middle">charting</text>
+              <text class="d-s" x="472" y="127" text-anchor="middle">raw-frame view</text>
+            </svg>
+          </div>
+          <div>
+            <h4 class="slide-sub">What I built</h4>
+            <ul class="bullets">
+              <li><strong>Firmware</strong> — CAN receive, timestamping, and a buffered write path architected so a power cut can't cost you the log.</li>
+              <li><strong>Desktop application</strong> — live CAN decoding, charting, and raw-frame inspection, so the data was readable by someone other than me.</li>
+              <li><strong>Enclosures</strong> — iterated 3D prints under tight vehicle packaging constraints, with custom cable strain relief.</li>
+              <li><strong>Manufacture and deploy</strong> — twelve units built and installed in vehicles.</li>
+            </ul>
+            <ul class="chips">
+              <li>Teensy 4.1</li><li>CAN bus</li><li>C++</li><li>SD / FAT</li><li>3D printing</li>
+            </ul>
+          </div>
+        </div>
+      </li>
+
+      <!-- 03 · Telemetry logger — the find -->
+      <li class="slide reveal">
+        <p class="slide-tag"><span class="slide-n">03</span> Root cause</p>
+        <h3 class="slide-title">A rogue CAN command from a bad app update.</h3>
+        <div class="slide-grid">
+          <div>
+            <ul class="bullets">
+              <li>Millions of raw frames reduced to <strong>dashboards and metrics</strong> engineers could actually read.</li>
+              <li>Correlated shutdown events against bus traffic in the seconds before each one.</li>
+              <li>Isolated a command that shouldn't have been there — traced to a <strong>faulty mobile app update</strong>, not a hardware fault.</li>
+            </ul>
+            <p class="slide-note">The instrument was the deliverable, but the answer
+              was the point: the fix belonged to a different team, and the data is
+              what told us that.</p>
+            <ul class="chips">
+              <li>Root cause analysis</li><li>Data visualization</li><li>Field deployment</li>
+            </ul>
+          </div>
+          <div class="shot-stack">
+            <figure class="slide-shot">
+              <img src="assets/img/logger-app.jpg" alt="Desktop application decoding CAN traffic with charts and raw frame view" loading="lazy" onerror="this.closest('.slide-shot').classList.add('no-img')">
+              <div class="ph" aria-hidden="true"><span><b>Screenshot: the desktop app</b>Live decode with a chart and the raw-frame pane visible.</span></div>
+            </figure>
+            <figure class="slide-shot">
+              <img src="assets/img/logger-install.jpg" alt="A logger installed in a vehicle with the harness run" loading="lazy" onerror="this.closest('.slide-shot').classList.add('no-img')">
+              <div class="ph" aria-hidden="true"><span><b>Photo: installed in the vehicle</b>One logger mounted in place with the harness run.</span></div>
+            </figure>
+          </div>
+        </div>
+      </li>
+
+      <!-- 04 · XDemics — the problem -->
+      <li class="slide reveal">
+        <p class="slide-tag"><span class="slide-n">04</span> XDemics Corporation · 2025–2026</p>
+        <h3 class="slide-title">Automating a bioreactor by hand — then not by hand.</h3>
+        <div class="slide-grid">
+          <div>
+            <p class="slide-lede">A multi-axis robotic system that seeds, grows,
+              fluidizes, and harvests cells in a bioreactor — replacing a manual
+              protocol with a five-minute automated vibration sequence.</p>
+            <ul class="bullets">
+              <li><strong>Led a team of six</strong> and interfaced directly with the client's CTO.</li>
+              <li>Owned timelines, delegation, and communication across the team, faculty advisors, and the client.</li>
+              <li>Handled sensitive biological material — the failure mode is losing living cells.</li>
+            </ul>
+            <div class="slide-metrics">
+              <div><b>&gt;95%</b><span>Live-cell recovery</span></div>
+              <div><b>100%</b><span>Surface coverage, validated</span></div>
+              <div><b>5 min</b><span>Automated sequence</span></div>
+            </div>
+          </div>
+          <figure class="slide-shot">
+            <img src="assets/img/xdemics-robot.jpg" alt="Multi-axis robotic bioreactor handling system" loading="lazy" onerror="this.closest('.slide-shot').classList.add('no-img')">
+            <div class="ph" aria-hidden="true"><span><b>Photo: the robot</b>The full multi-axis assembly with a bioreactor loaded.</span></div>
+            <figcaption>Multi-axis motion, vibration-driven fluidizing, bioreactor handling.</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <!-- 05 · XDemics — sequence and validation -->
+      <li class="slide reveal">
+        <p class="slide-tag"><span class="slide-n">05</span> Sequence and validation</p>
+        <h3 class="slide-title">Tuned in simulation, proven on the bench.</h3>
+        <div class="slide-grid wide-media">
+          <div class="diagram">
+            <svg viewBox="0 0 520 190" role="img" aria-label="Four-stage sequence — seed, grow, fluidize, harvest — with a simulation and bench-testing loop that tunes angle and vibration speed">
+              <rect class="d-box-a" x="6"   y="24" width="116" height="52" rx="8"/>
+              <text class="d-t" x="64"  y="46" text-anchor="middle">Seed</text>
+              <text class="d-s" x="64"  y="61" text-anchor="middle">cells into reactor</text>
+              <rect class="d-box-a" x="138" y="24" width="116" height="52" rx="8"/>
+              <text class="d-t" x="196" y="46" text-anchor="middle">Grow</text>
+              <text class="d-s" x="196" y="61" text-anchor="middle">incubate</text>
+              <rect class="d-box-a" x="270" y="24" width="116" height="52" rx="8"/>
+              <text class="d-t" x="328" y="46" text-anchor="middle">Fluidize</text>
+              <text class="d-s" x="328" y="61" text-anchor="middle">vibration sequence</text>
+              <rect class="d-box-a" x="402" y="24" width="112" height="52" rx="8"/>
+              <text class="d-t" x="458" y="46" text-anchor="middle">Harvest</text>
+              <text class="d-s" x="458" y="61" text-anchor="middle">&gt;95% recovery</text>
+              <line class="d-l-a" x1="122" y1="50" x2="136" y2="50"/>
+              <line class="d-l-a" x1="254" y1="50" x2="268" y2="50"/>
+              <line class="d-l-a" x1="386" y1="50" x2="400" y2="50"/>
+              <rect class="d-box" x="138" y="116" width="116" height="52" rx="8"/>
+              <text class="d-t" x="196" y="138" text-anchor="middle">2D COMSOL</text>
+              <text class="d-s" x="196" y="152" text-anchor="middle">fluid dynamics</text>
+              <rect class="d-box" x="270" y="116" width="116" height="52" rx="8"/>
+              <text class="d-t" x="328" y="138" text-anchor="middle">Bench testing</text>
+              <text class="d-s" x="328" y="152" text-anchor="middle">live cells</text>
+              <line class="d-l" x1="254" y1="142" x2="268" y2="142"/>
+              <line class="d-l" x1="328" y1="116" x2="328" y2="88"/>
+              <polygon class="d-ar" points="328,88 324.6,95 331.4,95"/>
+              <text class="d-lab" x="352" y="104" text-anchor="start">tunes angle + vibration speed</text>
+              <text class="d-lab" x="188" y="106" text-anchor="end">predicts coverage</text>
+              <line class="d-l" x1="196" y1="116" x2="196" y2="88" stroke-dasharray="3 3"/>
+            </svg>
+          </div>
+          <div>
+            <h4 class="slide-sub">How it was proven</h4>
+            <ul class="bullets">
+              <li><strong>2D COMSOL simulations</strong> of the fluid behaviour, used to predict surface coverage before touching cells.</li>
+              <li><strong>Empirical testing</strong> against the model — simulation and bench together confirmed 100% surface coverage.</li>
+              <li><strong>Parameter tuning</strong> on angle and vibration speed, driven by the fluid dynamics data rather than guesswork.</li>
+              <li>Result: <strong>&gt;95% recovery</strong> in live-cell testing.</li>
+            </ul>
+            <ul class="chips">
+              <li>COMSOL</li><li>Fluid dynamics</li><li>Mechatronics</li><li>Multi-axis motion</li>
+            </ul>
+          </div>
+        </div>
+      </li>
+
+      <!-- 06 · LED Zeppelin — signal chain -->
+      <li class="slide reveal">
+        <p class="slide-tag"><span class="slide-n">06</span> Nov – Dec 2025</p>
+        <h3 class="slide-title">LED Zeppelin — audio in, light out.</h3>
+        <div class="diagram full">
+          <svg viewBox="0 0 560 150" role="img" aria-label="Signal chain: MP3 audio into an STM32 running a 512-point FFT, producing a composite square wave sampled by an iCE40 FPGA in 100 millisecond windows, binned into 12 bands driving an RGB LED display over PWM">
+            <rect class="d-box" x="2" y="52" width="66" height="46" rx="8"/>
+            <text class="d-t" x="35" y="72" text-anchor="middle">Live MP3</text>
+            <text class="d-s" x="35" y="86" text-anchor="middle">audio in</text>
+            <line class="d-l-a" x1="68" y1="75" x2="96" y2="75"/>
+            <polygon class="d-ar-a" points="96,75 89,71.6 89,78.4"/>
+            <rect class="d-box-a" x="96" y="26" width="142" height="98" rx="10"/>
+            <text class="d-t" x="167" y="45" text-anchor="middle">STM32 MCU</text>
+            <rect class="d-box" x="108" y="54" width="118" height="26" rx="5"/>
+            <text class="d-s" x="167" y="70" text-anchor="middle">512-point FFT · CMSIS-DSP</text>
+            <rect class="d-box" x="108" y="86" width="118" height="26" rx="5"/>
+            <text class="d-s" x="167" y="102" text-anchor="middle">dominant freq extraction</text>
+            <line class="d-l-a" x1="238" y1="75" x2="306" y2="75"/>
+            <polygon class="d-ar-a" points="306,75 299,71.6 299,78.4"/>
+            <text class="d-lab" x="272" y="65" text-anchor="middle">composite</text>
+            <text class="d-lab" x="272" y="91" text-anchor="middle">square wave</text>
+            <rect class="d-box-a" x="306" y="26" width="142" height="98" rx="10"/>
+            <text class="d-t" x="377" y="45" text-anchor="middle">iCE40UP5K FPGA</text>
+            <rect class="d-box" x="318" y="54" width="118" height="26" rx="5"/>
+            <text class="d-s" x="377" y="70" text-anchor="middle">100 ms window sampling</text>
+            <rect class="d-box" x="318" y="86" width="118" height="26" rx="5"/>
+            <text class="d-s" x="377" y="102" text-anchor="middle">12 linear frequency bins</text>
+            <line class="d-l-a" x1="448" y1="75" x2="478" y2="75"/>
+            <polygon class="d-ar-a" points="478,75 471,71.6 471,78.4"/>
+            <text class="d-lab" x="463" y="65" text-anchor="middle">PWM</text>
+            <rect class="d-box" x="478" y="46" width="78" height="58" rx="8"/>
+            <text class="d-t" x="517" y="70" text-anchor="middle">RGB LED</text>
+            <text class="d-s" x="517" y="85" text-anchor="middle">display</text>
+          </svg>
+        </div>
+        <div class="slide-cols">
+          <ul class="bullets">
+            <li><strong>512-point FFT</strong> via CMSIS-DSP on the MCU, extracting dominant frequencies into a composite square wave.</li>
+            <li><strong>FPGA samples that wave</strong> in 100 ms windows, binning frequency counts into 12 linear bands.</li>
+          </ul>
+          <ul class="bullets">
+            <li>Bands drive the RGB display over <strong>PWM</strong>, with low latency between intake and render.</li>
+            <li>Dual-platform by design — each side doing what it's good at.</li>
+          </ul>
+        </div>
+      </li>
+
+      <!-- 07 · LED Zeppelin — the partition -->
+      <li class="slide reveal">
+        <p class="slide-tag"><span class="slide-n">07</span> Design decision</p>
+        <h3 class="slide-title">Why two chips instead of one.</h3>
+        <div class="slide-grid">
+          <div>
+            <ul class="bullets">
+              <li><strong>MCU does the maths.</strong> CMSIS-DSP gives a tuned, well-tested FFT on hardware built for it — no reason to rebuild that in fabric.</li>
+              <li><strong>FPGA does the timing.</strong> Windowed sampling, parallel binning, and many simultaneous PWM channels are exactly what fabric is good at, and it's deterministic.</li>
+              <li><strong>The interface is the interesting part.</strong> A composite square wave carries the frequency content across on a single line — the FPGA recovers the bands by counting, not by parsing a protocol.</li>
+            </ul>
+            <p class="slide-note">Trade-off worth naming out loud: that encoding is
+              cheap and glitch-tolerant, but it throws away amplitude information
+              the FFT already had.</p>
+          </div>
+          <div class="shot-stack">
+            <figure class="slide-shot">
+              <img src="assets/img/led-zeppelin.jpg" alt="LED Zeppelin audio visualizer running on an RGB LED display" loading="lazy" onerror="this.closest('.slide-shot').classList.add('no-img')">
+              <div class="ph" aria-hidden="true"><span><b>Photo: the display running</b>Long-exposure or mid-song shot of the RGB display lit up.</span></div>
+            </figure>
+            <div class="slide-card">
+              <h4 class="slide-sub">Numbers to confirm before presenting</h4>
+              <p class="slide-k">sample rate · bin width · window fn · PWM freq · LED count · end-to-end latency</p>
+              <p class="slide-note">Re-read the code before quoting any of these.
+                In a deep-dive, <em>“I'd have to check”</em> beats a number from memory.</p>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <!-- 08 · Also on the bench -->
+      <li class="slide reveal">
+        <p class="slide-tag"><span class="slide-n">08</span> Also on the bench</p>
+        <h3 class="slide-title">Happy to go here instead.</h3>
+        <div class="slide-cards">
+          <div class="slide-card">
+            <h4 class="slide-sub">RISC-V multicycle processor</h4>
+            <p class="slide-k">SystemVerilog · RV32I · RTL</p>
+            <p>A 32-bit RV32I-compliant core written from scratch. ALU, control unit, memory interface, datapath — every block built and verified by directed testing.</p>
+          </div>
+          <div class="slide-card">
+            <h4 class="slide-sub">Floating-point FMA unit</h4>
+            <p class="slide-k">IEEE 754 · low power · SystemVerilog</p>
+            <p>Half-precision multiply-accumulate implementing all four rounding modes (RTZ, RNE, RP, RN), with test scripts covering the edge cases.</p>
+          </div>
+          <div class="slide-card">
+            <h4 class="slide-sub">Autonomous ocean surface robot</h4>
+            <p class="slide-k">Teensy 4.0 · analog · GPS</p>
+            <p>Led a team of four. GPS waypoint navigation, analog sensor conditioning circuits for wind speed and turbidity, data analysis in MATLAB and Python.</p>
+          </div>
+          <div class="slide-card">
+            <h4 class="slide-sub">Simon on a bare-metal RISC-V MCU</h4>
+            <p class="slide-k">C · GPIO · debouncing</p>
+            <p>No libraries. GPIO control, button debouncing, LED sequencing, and game logic tuned for low-latency input.</p>
+          </div>
+          <div class="slide-card ghost">
+            <h4 class="slide-sub">The through-line</h4>
+            <p>Every one of these ended with hardware on a bench that either worked
+              or didn't — a core that had to pass its tests, a robot that had to
+              recover living cells, a logger that had to survive a power cut in a
+              moving vehicle. That's the kind of work I'm looking for next.</p>
+          </div>
+        </div>
+      </li>
+
+    </ol>
   </div>
 </section>
 

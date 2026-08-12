@@ -19,19 +19,25 @@
   }
 
   /* ---------------------------------------------------------------- *
-   * Positioning mode — "technical" vs "general"
+   * Positioning mode — "technical", "general", or "deck"
+   *
+   * technical/general are two framings of the same page; deck swaps the page
+   * for the deep-dive section. All three are just a class on <html> — the CSS
+   * does the rest, and every mode's content stays in the DOM.
    * ---------------------------------------------------------------- */
+  var MODES = ['technical', 'general', 'deck'];
   var modeButtons = Array.prototype.slice.call(document.querySelectorAll('.mode-btn'));
 
   function applyMode(mode, animate) {
-    var isGeneral = mode === 'general';
+    if (MODES.indexOf(mode) === -1) mode = 'technical';
 
     // Suppress reveal transitions during the swap so already-visible
     // content doesn't flash back in from the bottom.
     if (!animate) root.classList.add('mode-swapping');
 
-    root.classList.toggle('mode-general', isGeneral);
-    root.classList.toggle('mode-technical', !isGeneral);
+    MODES.forEach(function (m) {
+      root.classList.toggle('mode-' + m, m === mode);
+    });
 
     modeButtons.forEach(function (btn) {
       btn.setAttribute('aria-pressed', String(btn.dataset.mode === mode));
@@ -58,13 +64,28 @@
 
   modeButtons.forEach(function (btn) {
     btn.addEventListener('click', function () {
-      applyMode(btn.dataset.mode, false);
+      var was = currentMode();
+      var now = btn.dataset.mode;
+      applyMode(now, false);
       countUpVisible();
+
+      // Entering or leaving deck mode replaces the page contents rather than
+      // reframing them, so a preserved scroll position lands nowhere useful.
+      if (was !== now && (was === 'deck' || now === 'deck')) {
+        window.scrollTo(reduceMotion ? { top: 0 } : { top: 0, behavior: 'smooth' });
+      }
     });
   });
 
+  function currentMode() {
+    for (var i = 0; i < MODES.length; i++) {
+      if (root.classList.contains('mode-' + MODES[i])) return MODES[i];
+    }
+    return 'technical';
+  }
+
   var savedMode = store('jh-mode');
-  if (savedMode === 'general') applyMode('general', false);
+  if (savedMode && savedMode !== 'technical') applyMode(savedMode, false);
 
   /* ---------------------------------------------------------------- *
    * Color theme

@@ -14,6 +14,16 @@ in its place — nothing looks broken, so you can add them one at a time.
 | `ocean-robot.jpg` | Autonomous oceanic surface robot | The robot on the water |
 | `simon-game.jpg` | Simon game on RISC-V MCU | The breadboard with LEDs lit |
 
+### Extra shots used only by `deck.html`
+
+The interview deck reuses the images above and adds two of its own. Same rules
+apply — missing files fall back to a placeholder that names the shot to take.
+
+| Filename | Where it appears | Good shot to use |
+|---|---|---|
+| `logger-app.jpg` | Deck slide 4 | Screenshot of the desktop app: live decode with a chart and the raw-frame pane visible, ideally on a real capture |
+| `logger-install.jpg` | Deck slide 4 | One logger mounted in a vehicle with the harness run — shows the packaging constraint |
+
 ## Guidelines
 
 - **Format:** `.jpg` for photos. If you only have `.png`, either rename it to

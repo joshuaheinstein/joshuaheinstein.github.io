@@ -123,6 +123,17 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round
 .mode-general   .m-tech { display: none !important; }
 .mode-general   .tech-only { display: none !important; }
 
+/* Deck mode swaps the whole page for the deep-dive, rather than reframing it
+   the way Engineering/Leadership do. #deck stays in the DOM in every mode so
+   the content is still crawlable, same as the two framings above. */
+#deck { display: none; }
+.mode-deck #deck { display: block; }
+.mode-deck .hero,
+.mode-deck .stats-band,
+.mode-deck .section:not(#deck) { display: none; }
+/* The in-page nav links point at sections that deck mode hides. */
+.mode-deck .nav-links { visibility: hidden; }
+
 /* ---------- Layout ---------- */
 .wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 var(--gut); }
 .wrap-narrow { max-width: 760px; }
@@ -200,18 +211,26 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round
   background: var(--bg-sunken); border-radius: 999px;
   box-shadow: inset 0 0 0 1px var(--line-soft);
 }
+/* Three buttons now, so the thumb is a third of the track, not a half.
+   The track's content box is (W - 6px) after the 3px padding, so each button
+   is (W - 6)/3 and the thumb must match: 33.3333% of W minus 2px == (W - 6)/3.
+   It then translates by exactly its own width per step. Adding or removing a
+   button means redoing this — the two numbers are 100/n and 6/n. */
 .mode-switch-thumb {
-  position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc(50% - 3px);
+  position: absolute; top: 3px; bottom: 3px; left: 3px;
+  width: calc(33.3333% - 2px);
   background: var(--bg-card); border-radius: 999px;
   box-shadow: 0 1px 3px rgba(0,0,0,.16);
   transition: transform .42s var(--ease);
 }
 .mode-general .mode-switch-thumb { transform: translateX(100%); }
-/* Buttons must be equal width — the sliding thumb is exactly 50% and
-   translates by its own width, so unequal labels would misalign it. */
+.mode-deck    .mode-switch-thumb { transform: translateX(200%); }
+/* Buttons must be equal width — the thumb is exactly one third and translates
+   by its own width, so unequal labels would misalign it. The floor must exceed
+   the natural width of the LONGEST label ("Engineering", 92.2px here). */
 .mode-btn {
   position: relative; z-index: 1; padding: 5px 10px; border-radius: 999px;
-  min-width: 96px; text-align: center;   /* > "Engineering" at 92.2px */
+  min-width: 96px; text-align: center;
   font-size: 12.5px; font-weight: 550; color: var(--fg-dim); white-space: nowrap;
   transition: color .3s var(--ease-soft);
 }
@@ -549,6 +568,123 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round
 /* Mode switches shouldn't re-animate content that's already on screen */
 .mode-swapping .reveal { transition: none !important; }
 
+/* ---------- Deep-dive deck ---------- */
+/* Deliberately NOT the fixed 16:9 slide geometry deck.html uses. This version
+   is read by scrolling, including on a phone, so the cards flow and the type
+   is sized in px like the rest of the site rather than scaling with the card. */
+.deck-intro {
+  font-size: 16.5px; color: var(--fg-mid); max-width: 62ch; margin-top: 14px;
+}
+.deck-intro a { color: var(--accent); font-weight: 550; white-space: nowrap; }
+.deck-intro a:hover { text-decoration: underline; }
+
+.slides { display: flex; flex-direction: column; gap: 22px; margin-top: 44px; }
+
+.slide {
+  background: var(--bg-card); border-radius: var(--r-lg);
+  box-shadow: var(--shadow); padding: 38px 40px 40px;
+  border: 1px solid var(--line-soft);
+}
+.slide-tag {
+  display: flex; align-items: baseline; gap: 12px;
+  font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--fg-dim); font-weight: 600; margin-bottom: 10px;
+}
+.slide-n {
+  font-family: var(--mono); font-size: 12.5px; color: var(--accent);
+  letter-spacing: 0;
+}
+.slide-title {
+  font-size: clamp(24px, 3.1vw, 34px); line-height: 1.13;
+  letter-spacing: -.022em; font-weight: 640; margin-bottom: 24px;
+}
+.slide-lede {
+  font-size: 17.5px; line-height: 1.45; color: var(--fg-mid); margin-bottom: 20px;
+}
+.slide-sub { font-size: 16px; font-weight: 620; margin-bottom: 12px; }
+.slide-note {
+  font-size: 15px; line-height: 1.5; color: var(--fg-mid); margin-top: 18px;
+}
+.slide-k {
+  font-family: var(--mono); font-size: 13px; color: var(--fg-dim);
+  margin-bottom: 10px; line-height: 1.5;
+}
+
+.slide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+.slide-grid.wide-media { grid-template-columns: 1.35fr 1fr; }
+.slide-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; margin-top: 26px; }
+.slide-grid .bullets + .chips, .slide-cols .bullets + .chips { margin-top: 18px; }
+
+/* Metric row */
+.slide-metrics { display: flex; flex-wrap: wrap; gap: 30px; margin-top: 26px; }
+.slide-metrics div { display: flex; flex-direction: column; }
+.slide-metrics b {
+  font-size: 30px; font-weight: 660; letter-spacing: -.03em; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.slide-metrics span { font-size: 13px; color: var(--fg-dim); margin-top: 7px; max-width: 22ch; }
+
+/* Photo slots — same missing-image fallback pattern as the project cards */
+.slide-shot { position: relative; }
+.slide-shot img {
+  width: 100%; aspect-ratio: 4/3; object-fit: cover;
+  border-radius: var(--r-md); background: var(--bg-sunken);
+}
+.slide-shot .ph {
+  display: none; aspect-ratio: 4/3; border-radius: var(--r-md);
+  border: 1px dashed var(--line); background: var(--bg-sunken);
+  place-items: center; text-align: center; padding: 26px;
+}
+.slide-shot.no-img img { display: none; }
+.slide-shot.no-img .ph { display: grid; }
+.slide-shot .ph span { font-size: 14px; color: var(--fg-dim); line-height: 1.5; max-width: 34ch; }
+.slide-shot .ph b { display: block; color: var(--fg-mid); margin-bottom: 5px; }
+.slide-shot figcaption { font-size: 13px; color: var(--fg-dim); margin-top: 12px; }
+.shot-stack { display: grid; gap: 18px; }
+
+/* Diagram card */
+.diagram {
+  background: var(--bg-alt); border: 1px solid var(--line-soft);
+  border-radius: var(--r-md); padding: 24px;
+}
+.diagram.full { margin-bottom: 4px; }
+.diagram svg { width: 100%; height: auto; overflow: visible; }
+.d-box   { fill: var(--bg-card); stroke: var(--line); stroke-width: 1.2; }
+.d-box-a { fill: var(--bg-card); stroke: var(--accent); stroke-width: 1.8; }
+.d-t     { fill: var(--fg);     stroke: none; font-size: 11px;  font-weight: 620; }
+.d-s     { fill: var(--fg-dim); stroke: none; font-size: 8.6px; }
+.d-lab   { fill: var(--fg-dim); stroke: none; font-size: 8px; font-style: italic; }
+.d-l     { stroke: var(--fg-dim); stroke-width: 1.3; }
+.d-l-a   { stroke: var(--accent); stroke-width: 1.6; }
+.d-ar    { fill: var(--fg-dim); stroke: none; }
+.d-ar-a  { fill: var(--accent);  stroke: none; }
+
+/* Small card grid */
+.slide-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.slide-card {
+  background: var(--bg-alt); border: 1px solid var(--line-soft);
+  border-radius: var(--r-md); padding: 24px;
+}
+.slide-card p { font-size: 14.5px; line-height: 1.5; color: var(--fg-mid); }
+.slide-card.ghost { background: transparent; border-style: dashed; grid-column: span 2; }
+
+@media (max-width: 900px) {
+  .slide { padding: 30px 24px 32px; }
+  .slide-grid, .slide-grid.wide-media, .slide-cols { grid-template-columns: 1fr; gap: 26px; }
+  .slide-cards { grid-template-columns: 1fr 1fr; }
+  .slide-card.ghost { grid-column: span 2; }
+  /* The block diagrams have a fixed aspect and get illegible when squeezed —
+     let them keep their width and scroll sideways inside their own card. */
+  .diagram { overflow-x: auto; }
+  .diagram svg { min-width: 460px; }
+}
+@media (max-width: 620px) {
+  .slide-cards { grid-template-columns: 1fr; }
+  .slide-card.ghost { grid-column: auto; }
+  .slide-metrics { gap: 20px 26px; }
+  .slide-metrics b { font-size: 25px; }
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1000px) {
   .stats { grid-template-columns: repeat(2, 1fr); row-gap: 34px; }
@@ -566,8 +702,9 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round
 
 @media (max-width: 560px) {
   .nav-logo-text { display: none; }
-  /* Floor must exceed the natural width of the longer label ("Engineering",
-     85.3px here), otherwise the two buttons differ and the thumb misaligns. */
+  /* Floor must exceed the natural width of the longest label ("Engineering",
+     85.3px at this size), otherwise the buttons differ and the thumb
+     misaligns. Measured, not guessed — see CLAUDE.md. */
   .mode-btn { min-width: 90px; padding: 5px 8px; font-size: 12px; }
   .stats { grid-template-columns: 1fr; }
   .hero { min-height: auto; padding: 120px 0 72px; }

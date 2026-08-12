@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Joshua Heinstein — Project Deep-Dive</title>
+<meta name="description" content="Interview deep-dive deck: three projects, what they are and what I did.">
+
+<!--
+  Single self-contained file. No build step, no dependencies, no network requests.
+  Open it in any browser, or print to PDF (Cmd/Ctrl+P, landscape).
+
+  Keys:  → ↓ space / PageDown   next
+         ← ↑ PageUp             previous
+         N                      speaker notes (prep prompts, never printed)
+         T                      light / dark
+         O                      overview grid
+         F                      fullscreen
+         Home / End             first / last slide
+
+  Photos live in assets/img/. Any that are missing fall back to a labelled
+  placeholder describing the shot to take, so the deck never looks broken
+  while you fill them in one at a time.
+-->
+
+<style>
+/* ── Tokens — copied verbatim from the site so contrast stays verified ───── */
+:root {
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+          "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  --bg: #ffffff;  --bg-alt: #f5f5f7;  --bg-card: #ffffff;  --bg-sunken: #ebebef;
+  --fg: #10101a;  --fg-mid: #4a4a55;  --fg-dim: #68686e;
+  --line: rgba(0,0,0,.10); --line-soft: rgba(0,0,0,.06);
+  --accent: #0a6cff; --accent-fg: #ffffff;
+  /* --accent itself is only 4.19:1 on --bg-alt and 3.84:1 on --bg-sunken, so it
+     fails WCAG AA for text on the tinted card and chip backgrounds this deck
+     uses. It stays the graphical accent (arrows, rules, borders — 3:1 suffices
+     for non-text); accent-coloured TEXT uses this darker blue instead, which
+     clears 4.5:1 on every light background here (6.18 / 5.67 / 5.19).
+     Dark mode already passes, so the two tokens are the same there. */
+  --accent-text: #0059d6;
+  --shadow: 0 1px 2px rgba(0,0,0,.05), 0 8px 28px rgba(0,0,0,.07);
+  --shadow-lift: 0 2px 6px rgba(0,0,0,.06), 0 24px 60px rgba(0,0,0,.13);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #000000; --bg-alt: #08080b; --bg-card: #121216; --bg-sunken: #1a1a20;
+    --fg: #f5f5f7; --fg-mid: #b8b8c0; --fg-dim: #86868b;
+    --line: rgba(255,255,255,.13); --line-soft: rgba(255,255,255,.07);
+    --accent: #4d94ff; --accent-fg: #04101f; --accent-text: #4d94ff;
+    --shadow: 0 1px 2px rgba(0,0,0,.5), 0 10px 34px rgba(0,0,0,.55);
+    --shadow-lift: 0 2px 8px rgba(0,0,0,.55), 0 28px 70px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #000000; --bg-alt: #08080b; --bg-card: #121216; --bg-sunken: #1a1a20;
+  --fg: #f5f5f7; --fg-mid: #b8b8c0; --fg-dim: #86868b;
+  --line: rgba(255,255,255,.13); --line-soft: rgba(255,255,255,.07);
+  --accent: #4d94ff; --accent-fg: #04101f; --accent-text: #4d94ff;
+  --shadow: 0 1px 2px rgba(0,0,0,.5), 0 10px 34px rgba(0,0,0,.55);
+  --shadow-lift: 0 2px 8px rgba(0,0,0,.55), 0 28px 70px rgba(0,0,0,.7);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font);
+  background: var(--bg-alt);
+  color: var(--fg);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+img, svg { display: block; max-width: 100%; }
+ul { list-style: none; padding: 0; }
+svg { fill: none; stroke: currentColor; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ── Stage: a fixed 16:9 box scaled to the viewport ──────────────────────── */
+#stage {
+  position: fixed; inset: 0; margin: auto;
+  width: min(100vw, 177.778vh);
+  height: min(56.25vw, 100vh);
+  container-type: size;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute; inset: 0;
+  display: none;
+  padding: 5.2cqw 6cqw 4.4cqw;
+  background: var(--bg);
+}
+.slide.on { display: grid; }
+
+/* Type scale — everything in cqw so the deck scales as one piece */
+.eyebrow {
+  font-size: 1.35cqw; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--accent-text); font-weight: 620;
+}
+h1 { font-size: 5.6cqw; line-height: 1.04; letter-spacing: -.028em; font-weight: 660; }
+h2 { font-size: 3.5cqw; line-height: 1.1;  letter-spacing: -.022em; font-weight: 640; }
+h3 { font-size: 1.72cqw; line-height: 1.2; letter-spacing: -.01em;  font-weight: 620; }
+.lede { font-size: 2.05cqw; line-height: 1.32; color: var(--fg-mid); letter-spacing: -.012em; }
+p, li { font-size: 1.5cqw; }
+.dim { color: var(--fg-dim); }
+.mid { color: var(--fg-mid); }
+.mono { font-family: var(--mono); }
+
+/* ── Slide layouts ───────────────────────────────────────────────────────── */
+.s-title   { align-content: center; }
+/* Columns stretch to the full slide height, so a tall photo is bounded by the
+   slide rather than pushing past the bottom edge. Anything with an
+   aspect-ratio here will overflow — size media with grid rows instead. */
+.s-split   { grid-template-columns: 1fr 1fr; gap: 4cqw; align-items: stretch; }
+.s-wide    { align-content: start; }
+
+/* Text column: lets .metrics pin itself to the bottom with margin-top:auto */
+.col   { display: flex; flex-direction: column; min-height: 0; }
+/* Media column: rows are declared per slide; min-height:0 lets them shrink */
+.media { display: grid; gap: .9cqw; min-height: 0; }
+.media .shot { min-height: 0; }
+.s-head    { margin-bottom: 2.6cqw; }
+.s-head .eyebrow { margin-bottom: .9cqw; }
+
+/* Bullets with a small accent rule */
+.pts { display: grid; gap: 1.15cqw; }
+.pts li {
+  padding-left: 1.9cqw; position: relative;
+  color: var(--fg-mid); line-height: 1.42;
+}
+.pts li::before {
+  content: ""; position: absolute; left: 0; top: .62cqw;
+  width: .85cqw; height: .16cqw; border-radius: 1px; background: var(--accent);
+}
+.pts strong { color: var(--fg); font-weight: 620; }
+
+/* Metric row */
+.metrics { display: flex; gap: 3.2cqw; margin-top: auto; padding-top: 2cqw; }
+.metric .n {
+  font-size: 3.1cqw; font-weight: 660; letter-spacing: -.03em; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.metric .l {
+  font-size: 1.15cqw; color: var(--fg-dim); margin-top: .5cqw;
+  letter-spacing: .02em;
+}
+
+/* Chips */
+.chips { display: flex; flex-wrap: wrap; gap: .6cqw; }
+.chips li {
+  font-size: 1.15cqw; padding: .4cqw 1cqw; border-radius: 100px;
+  background: var(--bg-sunken); color: var(--fg-mid); border: 1px solid var(--line-soft);
+}
+
+/* Photo slots — fall back to a labelled placeholder when the file is missing */
+.shot { position: relative; border-radius: 1.4cqw; overflow: hidden; background: var(--bg-sunken); }
+.shot img { width: 100%; height: 100%; object-fit: cover; }
+.shot .ph {
+  display: none; position: absolute; inset: 0;
+  align-items: center; justify-content: center; text-align: center;
+  padding: 2cqw; border: 1px dashed var(--line);
+  border-radius: 1.4cqw; color: var(--fg-dim);
+}
+.shot.no-img img { display: none; }
+.shot.no-img .ph { display: flex; }
+.ph span { font-size: 1.2cqw; line-height: 1.45; max-width: 22cqw; }
+.ph span b { display: block; color: var(--fg-mid); font-weight: 620; margin-bottom: .4cqw; }
+.cap { font-size: 1.1cqw; color: var(--fg-dim); margin-top: .8cqw; }
+
+/* Diagram card */
+.diagram {
+  background: var(--bg-alt); border: 1px solid var(--line-soft);
+  border-radius: 1.4cqw; padding: 2.2cqw;
+}
+.diagram svg { width: 100%; height: auto; }
+.d-box   { fill: var(--bg-card); stroke: var(--line); stroke-width: 1.2; }
+.d-box-a { fill: var(--bg-card); stroke: var(--accent); stroke-width: 1.8; }
+.d-t     { fill: var(--fg); stroke: none; font-size: 11px; font-weight: 620; }
+.d-s     { fill: var(--fg-dim); stroke: none; font-size: 8.6px; }
+.d-l     { stroke: var(--fg-dim); stroke-width: 1.3; }
+.d-l-a   { stroke: var(--accent); stroke-width: 1.6; }
+.d-lab   { fill: var(--fg-dim); stroke: none; font-size: 8px; font-style: italic; }
+
+/* Fill-in marker — anything Joshua still needs to confirm before presenting */
+.todo {
+  color: var(--accent-text); border-bottom: 1px dashed currentColor;
+  font-style: italic;
+}
+
+/* Grid of small cards (slide 9 / 10) */
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5cqw; }
+.card {
+  background: var(--bg-alt); border: 1px solid var(--line-soft);
+  border-radius: 1.2cqw; padding: 1.8cqw; display: grid; gap: .7cqw;
+  align-content: start;
+}
+.card h3 { font-size: 1.42cqw; }
+.card p  { font-size: 1.2cqw; color: var(--fg-mid); line-height: 1.4; }
+.card .k { font-size: 1.05cqw; color: var(--fg-dim); font-family: var(--mono); }
+
+/* ── Chrome: progress, counter, notes ────────────────────────────────────── */
+#bar {
+  position: fixed; left: 0; top: 0; height: 2px; background: var(--accent);
+  width: 0; transition: width .3s cubic-bezier(.22,1,.36,1); z-index: 40;
+}
+#count {
+  position: fixed; right: 14px; bottom: 10px; z-index: 40;
+  font: 500 12px/1 var(--mono); color: var(--fg-dim);
+  background: var(--bg); padding: 5px 8px; border-radius: 6px;
+  border: 1px solid var(--line-soft);
+}
+#help {
+  position: fixed; left: 14px; bottom: 10px; z-index: 40;
+  font: 500 11px/1 var(--font); color: var(--fg-dim);
+  background: var(--bg); padding: 6px 9px; border-radius: 6px;
+  border: 1px solid var(--line-soft);
+}
+#notes {
+  position: fixed; right: 0; top: 0; bottom: 0; width: min(420px, 34vw);
+  background: var(--bg-card); border-left: 1px solid var(--line);
+  padding: 22px 24px; overflow-y: auto; z-index: 50;
+  box-shadow: var(--shadow-lift);
+  transform: translateX(100%); transition: transform .28s cubic-bezier(.22,1,.36,1);
+}
+#notes.on { transform: none; }
+#notes h4 {
+  font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent-text); margin-bottom: 12px;
+}
+#notes .q { font-size: 13.5px; color: var(--fg-mid); line-height: 1.5; margin-bottom: 10px;
+  padding-left: 14px; position: relative; }
+#notes .q::before { content: "?"; position: absolute; left: 0; color: var(--fg-dim);
+  font-family: var(--mono); }
+#notes .say { font-size: 13.5px; color: var(--fg); line-height: 1.5; margin-bottom: 14px; }
+
+/* ── Overview grid ───────────────────────────────────────────────────────── */
+#over {
+  position: fixed; inset: 0; z-index: 60; background: var(--bg-alt);
+  padding: 24px; display: none; grid-template-columns: repeat(4, 1fr);
+  gap: 14px; align-content: start; overflow-y: auto;
+}
+#over.on { display: grid; }
+#over button {
+  aspect-ratio: 16/9; border-radius: 10px; border: 1px solid var(--line);
+  background: var(--bg-card); color: var(--fg-mid); cursor: pointer;
+  font: 600 12px/1.35 var(--font); padding: 12px; text-align: left;
+  display: grid; align-content: space-between;
+}
+#over button:hover, #over button.cur { border-color: var(--accent); color: var(--fg); }
+#over button .num { font-family: var(--mono); font-size: 10px; color: var(--fg-dim); }
+
+/* ── Print: one slide per landscape page ─────────────────────────────────── */
+/* 11in x 6.1875in is exactly 16:9. Sizing the page and the slide to the same
+   explicit dimensions avoids the sub-pixel rounding that an aspect-ratio box
+   produces, which otherwise spills slides onto a second sheet. */
+@page { size: 11in 6.1875in; margin: 0; }
+@media print {
+  body { overflow: visible; background: #fff; }
+  #bar, #count, #help, #notes, #over { display: none !important; }
+  #stage {
+    position: static; width: 11in; height: auto; margin: 0;
+    container-type: inline-size;
+  }
+  .slide {
+    display: grid !important; position: relative; inset: auto;
+    width: 11in; height: 6.1875in; overflow: hidden;
+    break-after: page; page-break-after: always;
+    break-inside: avoid; page-break-inside: avoid;
+  }
+  .slide:last-child { break-after: auto; page-break-after: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="bar"></div>
+
+<main id="stage">
+
+  <!-- ═══ 1 · Title ═══════════════════════════════════════════════════════ -->
+  <section class="slide s-title on"
+    data-notes="say:Keep this short — name, what you build, and hand them the map of the next 20 minutes.|q:Which of the three do you want to start with?">
+    <p class="eyebrow">Project deep-dive</p>
+    <h1 style="margin:1.4cqw 0 1.8cqw">Joshua Heinstein</h1>
+    <p class="lede" style="max-width:52cqw">
+      B.S. Engineering, Harvey Mudd &middot; May 2026. Embedded systems, FPGA, and
+      hardware bring-up &mdash; things that have to work on a bench, in a vehicle,
+      or in a lab.
+    </p>
+    <div class="metrics" style="margin-top:3.4cqw">
+      <div class="metric"><div class="n">01</div><div class="l">Vehicle telemetry logger fleet &middot; Infinite Machine</div></div>
+      <div class="metric"><div class="n">02</div><div class="l">Multi-axis bioreactor robot &middot; XDemics</div></div>
+      <div class="metric"><div class="n">03</div><div class="l">LED Zeppelin &middot; STM32 + FPGA audio pipeline</div></div>
+    </div>
+  </section>
+
+  <!-- ═══ 2 · Logger — the failure ════════════════════════════════════════ -->
+  <section class="slide s-split"
+    data-notes="say:Lead with the failure, not the hardware. A vehicle shutting off at random with no repro path is the kind of problem they actually care about.|q:How did you decide what to log?|q:Why twelve loggers and not one?|q:What was the three-week constraint driven by?|q:How did you get them into vehicles — who installed them?">
+    <div class="col">
+      <header class="s-head">
+        <p class="eyebrow">01 &middot; Infinite Machine &middot; 2026</p>
+        <h2>Vehicles were shutting&nbsp;off at random.</h2>
+      </header>
+      <p class="lede" style="font-size:1.62cqw; margin-bottom:1.8cqw">
+        A field failure on an EV platform with no reproduction path in the shop.
+        If it won't fail in front of you, you have to go get the data.
+      </p>
+      <ul class="pts">
+        <li><strong>Three-week window</strong> from problem statement to root cause.</li>
+        <li>I owned the whole response: instrument the vehicles, capture the data, trace it back.</li>
+        <li>Twelve loggers designed, manufactured, and field-deployed.</li>
+      </ul>
+      <div class="metrics">
+        <div class="metric"><div class="n">12</div><div class="l">Loggers deployed</div></div>
+        <div class="metric"><div class="n">0</div><div class="l">Data loss across power interruption</div></div>
+        <div class="metric"><div class="n">3&nbsp;wk</div><div class="l">Problem to root cause</div></div>
+      </div>
+    </div>
+    <div class="media" style="grid-template-rows: 1fr auto">
+      <div class="shot">
+        <img src="assets/img/logger-fleet.jpg" alt="Fleet of Teensy 4.1 data loggers in 3D-printed enclosures"
+             onerror="this.closest('.shot').classList.add('no-img')">
+        <div class="ph"><span><b>Photo: the fleet</b>All twelve loggers laid out together &mdash; enclosures, harnesses, SD cards. The &ldquo;I built twelve of these&rdquo; shot.</span></div>
+      </div>
+      <p class="cap">Twelve loggers, 3D-printed vehicle-mount enclosures, custom cable strain relief.</p>
+    </div>
+  </section>
+
+  <!-- ═══ 3 · Logger — how it's built ═════════════════════════════════════ -->
+  <section class="slide s-wide"
+    data-notes="say:This is the slide to slow down on. Let them point at a block and ask.|q:What guarantees zero data loss on power cut — flush cadence? supercap? journaling?|q:What CAN bitrate, and did you ever drop frames?|q:How big is the buffer, and what happens when the SD write stalls?|q:Why Teensy 4.1 over an STM32 or a COTS logger?|q:How did you handle clock/timestamp alignment across twelve units?">
+    <header class="s-head">
+      <p class="eyebrow">01 &middot; Architecture</p>
+      <h2>Bus to bench, end to end.</h2>
+    </header>
+    <div style="display:grid; grid-template-columns: 1.42fr 1fr; gap:3cqw; align-items:start">
+      <div class="diagram">
+        <svg viewBox="0 0 520 200" role="img" aria-label="Block diagram: vehicle CAN bus into a Teensy 4.1 logger containing a CAN transceiver, ring buffer and block writer, out to an SD card, then to a desktop analysis application">
+          <!-- Vehicle -->
+          <rect class="d-box" x="4" y="72" width="84" height="58" rx="8"/>
+          <text class="d-t" x="46" y="95" text-anchor="middle">Vehicle</text>
+          <text class="d-s" x="46" y="109" text-anchor="middle">CAN bus</text>
+          <text class="d-s" x="46" y="120" text-anchor="middle">ECUs, app cmds</text>
+
+          <line class="d-l-a" x1="88" y1="101" x2="124" y2="101"/>
+          <polygon points="124,101 117,97.6 117,104.4" fill="currentColor" stroke="none" style="color:var(--accent)"/>
+          <text class="d-lab" x="106" y="93" text-anchor="middle">frames</text>
+
+          <!-- Logger -->
+          <rect class="d-box-a" x="124" y="26" width="154" height="150" rx="10"/>
+          <text class="d-t" x="201" y="46" text-anchor="middle">Teensy 4.1 logger</text>
+          <rect class="d-box" x="136" y="56" width="130" height="28" rx="6"/>
+          <text class="d-s" x="201" y="70" text-anchor="middle">CAN transceiver</text>
+          <text class="d-s" x="201" y="80" text-anchor="middle">receive + timestamp</text>
+          <rect class="d-box" x="136" y="90" width="130" height="28" rx="6"/>
+          <text class="d-s" x="201" y="104" text-anchor="middle">Ring buffer</text>
+          <text class="d-s" x="201" y="114" text-anchor="middle">decouples bus from SD</text>
+          <rect class="d-box" x="136" y="124" width="130" height="28" rx="6"/>
+          <text class="d-s" x="201" y="138" text-anchor="middle">Block writer</text>
+          <text class="d-s" x="201" y="148" text-anchor="middle">flush + commit</text>
+          <text class="d-lab" x="201" y="168" text-anchor="middle">firmware in C++</text>
+          <text class="d-lab" x="201" y="192" text-anchor="middle">3D-printed enclosure &middot; cable strain relief</text>
+
+          <line class="d-l" x1="278" y1="101" x2="312" y2="101"/>
+          <polygon points="312,101 305,97.6 305,104.4" fill="currentColor" stroke="none" style="color:var(--fg-dim)"/>
+
+          <!-- SD -->
+          <rect class="d-box" x="312" y="72" width="84" height="58" rx="8"/>
+          <text class="d-t" x="354" y="93" text-anchor="middle">SD card</text>
+          <text class="d-s" x="354" y="108" text-anchor="middle">survives</text>
+          <text class="d-s" x="354" y="119" text-anchor="middle">power loss</text>
+
+          <line class="d-l" x1="396" y1="101" x2="428" y2="101"/>
+          <polygon points="428,101 421,97.6 421,104.4" fill="currentColor" stroke="none" style="color:var(--fg-dim)"/>
+
+          <!-- Desktop -->
+          <rect class="d-box-a" x="428" y="62" width="88" height="78" rx="8"/>
+          <text class="d-t" x="472" y="86" text-anchor="middle">Desktop app</text>
+          <text class="d-s" x="472" y="103" text-anchor="middle">live CAN decode</text>
+          <text class="d-s" x="472" y="115" text-anchor="middle">charting</text>
+          <text class="d-s" x="472" y="127" text-anchor="middle">raw-frame view</text>
+        </svg>
+      </div>
+      <div>
+        <h3 style="margin-bottom:1.2cqw">What I built</h3>
+        <ul class="pts">
+          <li><strong>Firmware</strong> &mdash; CAN receive, timestamping, and a buffered write path architected so a power cut can't cost you the log.</li>
+          <li><strong>Desktop application</strong> &mdash; live CAN decoding, charting, and raw-frame inspection, so the data was readable by someone other than me.</li>
+          <li><strong>Enclosures</strong> &mdash; iterated 3D prints under tight vehicle packaging constraints, with custom cable strain relief.</li>
+          <li><strong>Manufacture and deploy</strong> &mdash; twelve units built and installed in vehicles.</li>
+        </ul>
+        <ul class="chips" style="margin-top:1.8cqw">
+          <li>Teensy 4.1</li><li>CAN bus</li><li>C++</li><li>SD / FAT</li><li>3D printing</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 4 · Logger — the find ═══════════════════════════════════════════ -->
+  <section class="slide s-split"
+    data-notes="say:This is the payoff. Walk the chain: shutdown event → timestamp → what was on the bus in the seconds before → which node sent it → correlate to the app release.|q:How did you know the command was rogue and not legitimate?|q:Could you reproduce it once you knew?|q:What did you hand the software team — a frame ID, a capture, a written report?|q:What would you have added to the logger knowing what you know now?">
+    <div class="col">
+      <header class="s-head">
+        <p class="eyebrow">01 &middot; Root cause</p>
+        <h2>A rogue CAN command from a bad app update.</h2>
+      </header>
+      <ul class="pts">
+        <li>Millions of raw frames reduced to <strong>dashboards and metrics</strong> engineers could actually read.</li>
+        <li>Correlated shutdown events against bus traffic in the seconds before each one.</li>
+        <li>Isolated a command that shouldn't have been there &mdash; traced to a <strong>faulty mobile app update</strong>, not a hardware fault.</li>
+      </ul>
+      <p class="mid" style="margin-top:1.8cqw; font-size:1.42cqw">
+        The instrument was the deliverable, but the answer was the point: the fix
+        belonged to a different team, and the data is what told us that.
+      </p>
+      <ul class="chips" style="margin-top:1.6cqw">
+        <li>Root cause analysis</li><li>Data visualization</li><li>Field deployment</li>
+      </ul>
+    </div>
+    <div class="media" style="grid-template-rows: 1fr 1fr">
+      <div class="shot">
+        <img src="assets/img/logger-app.jpg" alt="Desktop application decoding CAN traffic with charts and raw frame view"
+             onerror="this.closest('.shot').classList.add('no-img')">
+        <div class="ph"><span><b>Screenshot: the desktop app</b>Live decode with a chart and the raw-frame pane visible. Ideally showing a real capture.</span></div>
+      </div>
+      <div class="shot">
+        <img src="assets/img/logger-install.jpg" alt="Logger installed in a vehicle"
+             onerror="this.closest('.shot').classList.add('no-img')">
+        <div class="ph"><span><b>Photo: installed in the vehicle</b>One logger mounted in place with the harness run &mdash; shows the packaging constraint you designed around.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 5 · XDemics — the problem ═══════════════════════════════════════ -->
+  <section class="slide s-split"
+    data-notes="say:Frame it as: a manual lab protocol that was slow and inconsistent, replaced by a five-minute automated sequence. You led six people and carried the CTO relationship.|q:What was the manual protocol, step by step?|q:What were you actually leading — did you design a subsystem yourself, or coordinate?|q:What made the cells hard to handle?|q:How did the CTO define success?">
+    <div class="col">
+      <header class="s-head">
+        <p class="eyebrow">02 &middot; XDemics Corporation &middot; 2025&ndash;2026</p>
+        <h2>Automating a bioreactor by hand&nbsp;&mdash;&nbsp;then not by hand.</h2>
+      </header>
+      <p class="lede" style="font-size:1.62cqw; margin-bottom:1.8cqw">
+        A multi-axis robotic system that seeds, grows, fluidizes, and harvests
+        cells in a bioreactor &mdash; replacing a manual protocol with a
+        five-minute automated vibration sequence.
+      </p>
+      <ul class="pts">
+        <li><strong>Led a team of six</strong> and interfaced directly with the client's CTO.</li>
+        <li>Owned timelines, delegation, and communication across the team, faculty advisors, and the client.</li>
+        <li>Handled sensitive biological material &mdash; the failure mode is losing living cells.</li>
+      </ul>
+      <div class="metrics">
+        <div class="metric"><div class="n">&gt;95%</div><div class="l">Live-cell recovery</div></div>
+        <div class="metric"><div class="n">100%</div><div class="l">Surface coverage, validated</div></div>
+        <div class="metric"><div class="n">5&nbsp;min</div><div class="l">Automated sequence</div></div>
+      </div>
+    </div>
+    <div class="media" style="grid-template-rows: 1fr auto">
+      <div class="shot">
+        <img src="assets/img/xdemics-robot.jpg" alt="Multi-axis robotic bioreactor handling system"
+             onerror="this.closest('.shot').classList.add('no-img')">
+        <div class="ph"><span><b>Photo: the robot</b>The full multi-axis assembly with a bioreactor loaded. If you have a mid-motion shot, use that one.</span></div>
+      </div>
+      <p class="cap">Multi-axis motion, vibration-driven fluidizing, bioreactor handling.</p>
+    </div>
+  </section>
+
+  <!-- ═══ 6 · XDemics — sequence + validation ═════════════════════════════ -->
+  <section class="slide s-wide"
+    data-notes="say:The interesting engineering here is that you validated in simulation AND empirically, and used the sim to tune real parameters — angle and vibration speed.|q:What did the COMSOL model actually solve for, and what did you simplify?|q:Why 2D and not 3D — what did that cost you?|q:How did you measure surface coverage empirically?|q:How do you know the >95% number is real — sample size?|q:Where did sim and bench disagree?">
+    <header class="s-head">
+      <p class="eyebrow">02 &middot; Sequence and validation</p>
+      <h2>Tuned in simulation, proven on the bench.</h2>
+    </header>
+    <div style="display:grid; grid-template-columns: 1.42fr 1fr; gap:3cqw; align-items:start">
+      <div class="diagram">
+        <svg viewBox="0 0 520 190" role="img" aria-label="Four-stage sequence: seed, grow, fluidize, harvest, with a simulation and bench-test tuning loop feeding angle and vibration speed">
+          <!-- Stages -->
+          <rect class="d-box-a" x="6"   y="24" width="116" height="52" rx="8"/>
+          <text class="d-t" x="64"  y="46" text-anchor="middle">Seed</text>
+          <text class="d-s" x="64"  y="61" text-anchor="middle">cells into reactor</text>
+
+          <rect class="d-box-a" x="138" y="24" width="116" height="52" rx="8"/>
+          <text class="d-t" x="196" y="46" text-anchor="middle">Grow</text>
+          <text class="d-s" x="196" y="61" text-anchor="middle">incubate</text>
+
+          <rect class="d-box-a" x="270" y="24" width="116" height="52" rx="8"/>
+          <text class="d-t" x="328" y="46" text-anchor="middle">Fluidize</text>
+          <text class="d-s" x="328" y="61" text-anchor="middle">vibration sequence</text>
+
+          <rect class="d-box-a" x="402" y="24" width="112" height="52" rx="8"/>
+          <text class="d-t" x="458" y="46" text-anchor="middle">Harvest</text>
+          <text class="d-s" x="458" y="61" text-anchor="middle">&gt;95% recovery</text>
+
+          <line class="d-l-a" x1="122" y1="50" x2="136" y2="50"/>
+          <line class="d-l-a" x1="254" y1="50" x2="268" y2="50"/>
+          <line class="d-l-a" x1="386" y1="50" x2="400" y2="50"/>
+
+          <!-- Tuning loop -->
+          <rect class="d-box" x="138" y="116" width="116" height="52" rx="8"/>
+          <text class="d-t" x="196" y="138" text-anchor="middle">2D COMSOL</text>
+          <text class="d-s" x="196" y="152" text-anchor="middle">fluid dynamics</text>
+
+          <rect class="d-box" x="270" y="116" width="116" height="52" rx="8"/>
+          <text class="d-t" x="328" y="138" text-anchor="middle">Bench testing</text>
+          <text class="d-s" x="328" y="152" text-anchor="middle">live cells</text>
+
+          <line class="d-l" x1="254" y1="142" x2="268" y2="142"/>
+          <line class="d-l" x1="328" y1="116" x2="328" y2="88"/>
+          <polygon points="328,88 324.6,95 331.4,95" fill="currentColor" stroke="none" style="color:var(--fg-dim)"/>
+          <text class="d-lab" x="352" y="104" text-anchor="start">tunes angle + vibration speed</text>
+
+          <text class="d-lab" x="188" y="106" text-anchor="end">predicts coverage</text>
+          <line class="d-l" x1="196" y1="116" x2="196" y2="88" stroke-dasharray="3 3"/>
+        </svg>
+      </div>
+      <div>
+        <h3 style="margin-bottom:1.2cqw">How it was proven</h3>
+        <ul class="pts">
+          <li><strong>2D COMSOL simulations</strong> of the fluid behaviour, used to predict surface coverage before touching cells.</li>
+          <li><strong>Empirical testing</strong> against the model &mdash; simulation and bench together confirmed 100% surface coverage.</li>
+          <li><strong>Parameter tuning</strong> on angle and vibration speed, driven by the fluid dynamics data rather than guesswork.</li>
+          <li>Result: <strong>&gt;95% recovery</strong> in live-cell testing.</li>
+        </ul>
+        <ul class="chips" style="margin-top:1.8cqw">
+          <li>COMSOL</li><li>Fluid dynamics</li><li>Mechatronics</li><li>Multi-axis motion</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 7 · LED Zeppelin — signal chain ═════════════════════════════════ -->
+  <section class="slide s-wide"
+    data-notes="say:Walk the signal left to right, then stop and let them pick a block. This is the most 'do you actually understand it' project of the three.|q:Why 512 points — what frequency resolution does that give you?|q:What window function, and why?|q:How do you pick 'dominant' frequencies out of the bins?|q:Why encode as a composite square wave instead of sending values over SPI/UART?|q:What's the end-to-end latency from audio in to LED out?">
+    <header class="s-head">
+      <p class="eyebrow">03 &middot; Nov&ndash;Dec 2025</p>
+      <h2>LED Zeppelin &mdash; audio in, light out.</h2>
+    </header>
+    <div class="diagram" style="margin-bottom:2cqw">
+      <svg viewBox="0 0 560 150" role="img" aria-label="Signal chain: MP3 audio into an STM32 running a 512-point FFT, producing a composite square wave sampled by an iCE40 FPGA in 100 millisecond windows, binned into 12 bands driving an RGB LED display over PWM">
+        <rect class="d-box" x="2" y="52" width="66" height="46" rx="8"/>
+        <text class="d-t" x="35" y="72" text-anchor="middle">Live MP3</text>
+        <text class="d-s" x="35" y="86" text-anchor="middle">audio in</text>
+
+        <line class="d-l-a" x1="68" y1="75" x2="96" y2="75"/>
+        <polygon points="96,75 89,71.6 89,78.4" fill="currentColor" stroke="none" style="color:var(--accent)"/>
+
+        <rect class="d-box-a" x="96" y="26" width="142" height="98" rx="10"/>
+        <text class="d-t" x="167" y="45" text-anchor="middle">STM32 MCU</text>
+        <rect class="d-box" x="108" y="54" width="118" height="26" rx="5"/>
+        <text class="d-s" x="167" y="70" text-anchor="middle">512-point FFT &middot; CMSIS-DSP</text>
+        <rect class="d-box" x="108" y="86" width="118" height="26" rx="5"/>
+        <text class="d-s" x="167" y="102" text-anchor="middle">dominant freq extraction</text>
+
+        <line class="d-l-a" x1="238" y1="75" x2="306" y2="75"/>
+        <polygon points="306,75 299,71.6 299,78.4" fill="currentColor" stroke="none" style="color:var(--accent)"/>
+        <text class="d-lab" x="272" y="65" text-anchor="middle">composite</text>
+        <text class="d-lab" x="272" y="91" text-anchor="middle">square wave</text>
+
+        <rect class="d-box-a" x="306" y="26" width="142" height="98" rx="10"/>
+        <text class="d-t" x="377" y="45" text-anchor="middle">iCE40UP5K FPGA</text>
+        <rect class="d-box" x="318" y="54" width="118" height="26" rx="5"/>
+        <text class="d-s" x="377" y="70" text-anchor="middle">100 ms window sampling</text>
+        <rect class="d-box" x="318" y="86" width="118" height="26" rx="5"/>
+        <text class="d-s" x="377" y="102" text-anchor="middle">12 linear frequency bins</text>
+
+        <line class="d-l-a" x1="448" y1="75" x2="478" y2="75"/>
+        <polygon points="478,75 471,71.6 471,78.4" fill="currentColor" stroke="none" style="color:var(--accent)"/>
+        <text class="d-lab" x="463" y="65" text-anchor="middle">PWM</text>
+
+        <rect class="d-box" x="478" y="46" width="78" height="58" rx="8"/>
+        <text class="d-t" x="517" y="70" text-anchor="middle">RGB LED</text>
+        <text class="d-s" x="517" y="85" text-anchor="middle">display</text>
+      </svg>
+    </div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:3cqw">
+      <ul class="pts">
+        <li><strong>512-point FFT</strong> via CMSIS-DSP on the MCU, extracting dominant frequencies into a composite square wave.</li>
+        <li><strong>FPGA samples that wave</strong> in 100&nbsp;ms windows, binning frequency counts into 12 linear bands.</li>
+      </ul>
+      <ul class="pts">
+        <li>Bands drive the RGB display over <strong>PWM</strong>, with low latency between intake and render.</li>
+        <li>Dual-platform by design &mdash; each side doing what it's good at.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══ 8 · LED Zeppelin — the partition ════════════════════════════════ -->
+  <section class="slide s-split"
+    data-notes="say:This is the architecture-judgement slide. If they only remember one thing from project three, make it that you chose the split deliberately.|q:What would break if you did the whole thing on the STM32?|q:What would break if you did the whole thing on the FPGA?|q:How many LEDs, and how many PWM channels does that need?|q:What's your PWM frequency and bit depth?|CONFIRM the numbers marked in blue before you present — don't quote a figure you haven't re-measured.">
+    <div class="col">
+      <header class="s-head">
+        <p class="eyebrow">03 &middot; Design decision</p>
+        <h2>Why two chips instead of one.</h2>
+      </header>
+      <ul class="pts">
+        <li><strong>MCU does the maths.</strong> CMSIS-DSP gives a tuned, well-tested FFT on hardware built for it &mdash; no reason to rebuild that in fabric.</li>
+        <li><strong>FPGA does the timing.</strong> Windowed sampling, parallel binning, and many simultaneous PWM channels are exactly what fabric is good at, and it's deterministic.</li>
+        <li><strong>The interface is the interesting part.</strong> A composite square wave carries the frequency content across on a single line &mdash; the FPGA recovers the bands by counting, not by parsing a protocol.</li>
+      </ul>
+      <p class="mid" style="margin-top:1.8cqw; font-size:1.4cqw">
+        Trade-off worth naming out loud: that encoding is cheap and glitch-tolerant,
+        but it throws away amplitude information the FFT already had.
+      </p>
+    </div>
+    <div class="media" style="grid-template-rows: 1fr auto">
+      <div class="shot">
+        <img src="assets/img/led-zeppelin.jpg" alt="LED Zeppelin audio visualiser running on an RGB LED display"
+             onerror="this.closest('.shot').classList.add('no-img')">
+        <div class="ph"><span><b>Photo: the display running</b>Long-exposure or mid-song shot of the RGB display lit up. A short video clip on your phone is even better here.</span></div>
+      </div>
+      <div class="card">
+        <h3>Numbers to confirm before you present</h3>
+        <p class="k">sample rate &middot; bin width &middot; window fn &middot; PWM freq &middot; LED count &middot; end-to-end latency</p>
+        <p>Re-measure or re-read the code tonight. Don't quote a figure from memory in a deep-dive &mdash; <span class="todo">say &ldquo;I'd have to check&rdquo;</span> instead.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 9 · Also on the bench ═══════════════════════════════════════════ -->
+  <section class="slide s-wide"
+    data-notes="say:This slide exists so they can redirect. If they'd rather dig into the RISC-V core than the bioreactor, let them — that's a good sign.|q:Which of these do you want to look at instead?|say:The processor and the FMA unit are the two that prove you understand hardware from first principles. Offer them.">
+    <header class="s-head">
+      <p class="eyebrow">Also on the bench</p>
+      <h2>Happy to go here instead.</h2>
+    </header>
+    <div class="grid3" style="margin-bottom:1.5cqw">
+      <div class="card">
+        <h3>RISC-V multicycle processor</h3>
+        <p class="k">SystemVerilog &middot; RV32I &middot; RTL</p>
+        <p>A 32-bit RV32I-compliant core written from scratch. ALU, control unit, memory interface, datapath &mdash; every block built and verified by directed testing.</p>
+      </div>
+      <div class="card">
+        <h3>Floating-point FMA unit</h3>
+        <p class="k">IEEE 754 &middot; low power &middot; SystemVerilog</p>
+        <p>Half-precision multiply-accumulate implementing all four rounding modes (RTZ, RNE, RP, RN), with test scripts covering the edge cases.</p>
+      </div>
+      <div class="card">
+        <h3>Autonomous ocean surface robot</h3>
+        <p class="k">Teensy 4.0 &middot; analog &middot; GPS</p>
+        <p>Led a team of four. GPS waypoint navigation, analog sensor conditioning circuits for wind speed and turbidity, data analysis in MATLAB and Python.</p>
+      </div>
+    </div>
+    <div class="grid3">
+      <div class="card">
+        <h3>Simon on a bare-metal RISC-V MCU</h3>
+        <p class="k">C &middot; GPIO &middot; debouncing</p>
+        <p>No libraries. GPIO control, button debouncing, LED sequencing, and game logic tuned for low-latency input.</p>
+      </div>
+      <div class="card" style="grid-column: span 2; background:transparent; border-style:dashed">
+        <h3>The through-line</h3>
+        <p>Every one of these ended with hardware on a bench that either worked or
+        didn't &mdash; a core that had to pass its tests, a robot that had to recover
+        living cells, a logger that had to survive a power cut in a moving vehicle.
+        That's the kind of work I'm looking for next.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 10 · Close ══════════════════════════════════════════════════════ -->
+  <section class="slide s-title"
+    data-notes="say:Close by handing control back. Then ask your own questions — have two ready about what they're building and what the first six months look like.|q:What does bring-up look like on your team today?|q:Where does the hardware/software line sit at Ultra?">
+    <p class="eyebrow">Thank you</p>
+    <h2 style="margin:1.4cqw 0 1.8cqw; max-width:60cqw">
+      Happy to go deeper on any block on any of these.
+    </h2>
+    <p class="lede" style="max-width:50cqw">
+      Joshua Heinstein &middot; New York, NY<br>
+      Harvey Mudd College, B.S. Engineering, May 2026
+    </p>
+    <ul class="chips" style="margin-top:3cqw">
+      <li>Embedded C / C++</li><li>SystemVerilog</li><li>CAN bus</li><li>FPGA</li>
+      <li>Hardware bring-up</li><li>Root cause analysis</li><li>Team leadership</li>
+    </ul>
+  </section>
+
+</main>
+
+<aside id="notes" aria-label="Speaker notes" aria-hidden="true"><h4>Prep notes</h4><div id="notes-body"></div></aside>
+<div id="over" role="dialog" aria-label="Slide overview" aria-hidden="true"></div>
+<div id="count" aria-live="polite">1 / 10</div>
+<div id="help">→ next &middot; N notes &middot; O overview &middot; T theme &middot; F fullscreen</div>
+
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var bar = document.getElementById('bar');
+  var count = document.getElementById('count');
+  var notes = document.getElementById('notes');
+  var notesBody = document.getElementById('notes-body');
+  var over = document.getElementById('over');
+  var i = 0;
+
+  // Deep-link + restore: #3 opens on slide 3
+  var fromHash = parseInt(location.hash.slice(1), 10);
+  if (fromHash >= 1 && fromHash <= slides.length) i = fromHash - 1;
+
+  function renderNotes() {
+    var raw = slides[i].getAttribute('data-notes') || '';
+    notesBody.innerHTML = '';
+    raw.split('|').forEach(function (chunk) {
+      if (!chunk) return;
+      var div = document.createElement('div');
+      if (chunk.indexOf('q:') === 0) { div.className = 'q'; div.textContent = chunk.slice(2); }
+      else if (chunk.indexOf('say:') === 0) { div.className = 'say'; div.textContent = chunk.slice(4); }
+      else { div.className = 'say'; div.textContent = chunk; }
+      notesBody.appendChild(div);
+    });
+  }
+
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (s, k) { s.classList.toggle('on', k === i); });
+    bar.style.width = ((i + 1) / slides.length * 100) + '%';
+    count.textContent = (i + 1) + ' / ' + slides.length;
+    history.replaceState(null, '', '#' + (i + 1));
+    renderNotes();
+    Array.prototype.forEach.call(over.children, function (b, k) {
+      b.classList.toggle('cur', k === i);
+    });
+  }
+
+  // Overview grid, built from each slide's heading
+  slides.forEach(function (s, k) {
+    var b = document.createElement('button');
+    var h = s.querySelector('h1, h2');
+    b.innerHTML = '<span class="num">' + (k + 1) + '</span><span>' +
+                  (h ? h.textContent.trim() : '') + '</span>';
+    b.addEventListener('click', function () { toggleOver(false); show(k); });
+    over.appendChild(b);
+  });
+
+  function toggleOver(force) {
+    var on = force === undefined ? !over.classList.contains('on') : force;
+    over.classList.toggle('on', on);
+    over.setAttribute('aria-hidden', String(!on));
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'ArrowDown' || k === ' ' || k === 'PageDown') { e.preventDefault(); show(i + 1); }
+    else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp') { e.preventDefault(); show(i - 1); }
+    else if (k === 'Home') { e.preventDefault(); show(0); }
+    else if (k === 'End') { e.preventDefault(); show(slides.length - 1); }
+    else if (k === 'n' || k === 'N') {
+      notes.classList.toggle('on');
+      notes.setAttribute('aria-hidden', String(!notes.classList.contains('on')));
+    }
+    else if (k === 'o' || k === 'O') { toggleOver(); }
+    else if (k === 'Escape') { toggleOver(false); }
+    else if (k === 't' || k === 'T') {
+      var cur = document.documentElement.getAttribute('data-theme');
+      var next = cur === 'dark' ? 'light' : cur === 'light' ? 'dark'
+        : (matchMedia('(prefers-color-scheme: dark)').matches ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', next);
+    }
+    else if (k === 'f' || k === 'F') {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else document.documentElement.requestFullscreen().catch(function () {});
+    }
+  });
+
+  // Editing the hash in the address bar jumps to that slide
+  window.addEventListener('hashchange', function () {
+    var n = parseInt(location.hash.slice(1), 10);
+    if (n >= 1 && n <= slides.length && n - 1 !== i) show(n - 1);
+  });
+
+  // Click / tap to advance, but never when selecting text or hitting a control
+  document.getElementById('stage').addEventListener('click', function (e) {
+    if (window.getSelection().toString()) return;
+    if (e.target.closest('button, a')) return;
+    show(i + (e.clientX < window.innerWidth * 0.25 ? -1 : 1));
+  });
+
+  show(i);
+})();
+</script>
+</body>
+</html>
