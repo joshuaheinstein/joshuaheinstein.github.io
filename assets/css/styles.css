@@ -666,13 +666,14 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round
   border-radius: var(--r-md); padding: 24px;
 }
 .slide-card p { font-size: 14.5px; line-height: 1.5; color: var(--fg-mid); }
-.slide-card.ghost { background: transparent; border-style: dashed; grid-column: span 2; }
+/* Six cells total (five projects + the through-line), so the ghost is a normal
+   single column and the grid tiles evenly at 3, 2 and 1 columns. */
+.slide-card.ghost { background: transparent; border-style: dashed; }
 
 @media (max-width: 900px) {
   .slide { padding: 30px 24px 32px; }
   .slide-grid, .slide-grid.wide-media, .slide-cols { grid-template-columns: 1fr; gap: 26px; }
   .slide-cards { grid-template-columns: 1fr 1fr; }
-  .slide-card.ghost { grid-column: span 2; }
   /* The block diagrams have a fixed aspect and get illegible when squeezed —
      let them keep their width and scroll sideways inside their own card. */
   .diagram { overflow-x: auto; }
@@ -680,7 +681,6 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round
 }
 @media (max-width: 620px) {
   .slide-cards { grid-template-columns: 1fr; }
-  .slide-card.ghost { grid-column: auto; }
   .slide-metrics { gap: 20px 26px; }
   .slide-metrics b { font-size: 25px; }
 }
